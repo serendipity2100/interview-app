@@ -1,21 +1,19 @@
+import { Logger } from '../common/utils/Logger';
+
 @Entry
 @Component
 struct Index {
   @State message: string = 'Hello HM';
 
   build() {
-    RelativeContainer() {
-      Text(this.message)
-        .id('HelloWorld')
-        .fontSize(50)
-        .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
+    Column() {
+      Button('黄色警告日志')
+        .onClick(() => {
+          Logger.warn('xxx', '警告', 'hello')
+          Logger.error('xxx', '警告', 'hello')
+          Logger.info('xxx', '警告', 'hello')
+
         })
-        .backgroundColor($r('app.color.common_main_color'))
     }
-    .height('100%')
-    .width('100%')
   }
 }
