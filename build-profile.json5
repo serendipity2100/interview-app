@@ -1,6 +1,20 @@
 {
   "app": {
-    "signingConfigs": [],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\lucky\\.ohos\\config\\default_sz-02-interview_z6yPqaHzEe7M4JN0YxSz8x1AD8FOjpl1TAvbG3WdPLk=.cer",
+          "storePassword": "0000001BCAA046F9823D59C4B2891E3E1AC7C41A52AA40195EFD4526FB99326A6C36D37540931AD068612F",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B7BF9164FDEDD9227912D311257CED069C4ABA990512309CACD24CC4FC7DDCB71D80030174DB70B",
+          "profile": "C:\\Users\\lucky\\.ohos\\config\\default_sz-02-interview_z6yPqaHzEe7M4JN0YxSz8x1AD8FOjpl1TAvbG3WdPLk=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\lucky\\.ohos\\config\\default_sz-02-interview_z6yPqaHzEe7M4JN0YxSz8x1AD8FOjpl1TAvbG3WdPLk=.p12"
+        }
+      }
+    ],
     "products": [
       {
         "name": "default",

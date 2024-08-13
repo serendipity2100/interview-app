@@ -4,13 +4,6 @@ import { Mine } from '../views/Mine/Mine'
 import { Project } from '../views/Project/Project'
 import { window } from '@kit.ArkUI'
 
-// 沉浸式模式-全屏-显示问题
-// 1. 非全屏进入到全屏 会有一个闪烁问题✅
-// 2. 部分界面需要全屏
-
-// 把所有的界面直接设置为全屏
-// 把不需要全屏的界面, 用盒子撑开状态栏高度即可
-
 
 @Entry
 @Component
@@ -22,7 +15,6 @@ struct Index {
     win.setWindowLayoutFullScreen(true)
 
     const res = win.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM)
-    // 1. 初始化AppStorage
     AppStorage.setOrCreate('topHeight', px2vp(res.topRect.height))
 
   }
@@ -73,5 +65,6 @@ struct Index {
     }
     .animationDuration(0) // 去掉切换动画
     .barPosition(BarPosition.End) // tabs在底部显示
+    .padding({ bottom: 15 }) // 1. 修复底部被操作栏遮挡的问题
   }
 }
