@@ -2,21 +2,14 @@ import { Home } from '../views/Home/Home'
 import { Interview } from '../views/Interview/Interview'
 import { Mine } from '../views/Mine/Mine'
 import { Project } from '../views/Project/Project'
-import { window } from '@kit.ArkUI'
+import { WindowManager } from '../common/utils/WindowManager'
 
 
 @Entry
 @Component
 struct Index {
   async aboutToAppear() {
-
-    const ctx = getContext(this)
-    const win = await window.getLastWindow(ctx)
-    win.setWindowLayoutFullScreen(true)
-
-    const res = win.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM)
-    AppStorage.setOrCreate('topHeight', px2vp(res.topRect.height))
-
+    WindowManager.enableFullScreen()
   }
 
   @State currentIndex: number = 0
