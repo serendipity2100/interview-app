@@ -1,5 +1,3 @@
-import hilog from '@ohos.hilog'
-import { Logger } from '../common/utils/Logger'
 import { Home } from '../views/Home/Home'
 import { Interview } from '../views/Interview/Interview'
 import { Mine } from '../views/Mine/Mine'
@@ -8,9 +6,8 @@ import { Project } from '../views/Project/Project'
 @Entry
 @Component
 struct Index {
-  @State currentIndex: number = 0 // 表示默认选中的是第一个tab栏
+  @State currentIndex: number = 0
 
-  // 自定义tab的标签栏
   @Builder
   tabBuilder(text: string, icon: ResourceStr, selectedIcon: ResourceStr, index: number) {
     Column({ space: 5 }) {
@@ -24,9 +21,6 @@ struct Index {
   build() {
     Row() {
       Column() {
-
-        //   使用Tab组件完成导航栏的使用
-        //   $$this.currentIndex 双向数据绑定，自定更新currentIndex的值，功能等同于onChange事件
         Tabs({ index: $$this.currentIndex }) {
           TabContent() {
             Home()
@@ -52,8 +46,6 @@ struct Index {
         .animationDuration(0) // 去掉切换动画
         .barPosition(BarPosition.End) // tabs在底部显示
       }
-      .width('100%')
     }
-    .height('100%')
   }
 }
