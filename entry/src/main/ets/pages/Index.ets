@@ -1,19 +1,59 @@
-import { Logger } from '../common/utils/Logger';
+import hilog from '@ohos.hilog'
+import { Logger } from '../common/utils/Logger'
+import { Home } from '../views/Home/Home'
+import { Interview } from '../views/Interview/Interview'
+import { Mine } from '../views/Mine/Mine'
+import { Project } from '../views/Project/Project'
 
 @Entry
 @Component
 struct Index {
-  @State message: string = 'Hello HM';
+  @State currentIndex: number = 0 // 表示默认选中的是第一个tab栏
+
+  // 自定义tab的标签栏
+  @Builder
+  tabBuilder(text: string, icon: ResourceStr, selectedIcon: ResourceStr, index: number) {
+    Column({ space: 5 }) {
+      Image(this.currentIndex === index ? selectedIcon : icon)
+        .height(28)
+        .aspectRatio(1)
+      Text(text)
+    }
+  }
 
   build() {
-    Column() {
-      Button('黄色警告日志')
-        .onClick(() => {
-          Logger.warn('xxx', '警告', 'hello')
-          Logger.error('xxx', '警告', 'hello')
-          Logger.info('xxx', '警告', 'hello')
+    Row() {
+      Column() {
 
-        })
+        //   使用Tab组件完成导航栏的使用
+        //   $$this.currentIndex 双向数据绑定，自定更新currentIndex的值，功能等同于onChange事件
+        Tabs({ index: $$this.currentIndex }) {
+          TabContent() {
+            Home()
+
+          }.tabBar(this.tabBuilder('首页', $r('app.media.home'), $r('app.media.home_select'), 0))
+
+          TabContent() {
+            Project()
+
+          }.tabBar(this.tabBuilder('项目', $r('app.media.tabbar_project'), $r('app.media.ic_tabbar_project_select'), 1))
+
+          TabContent() {
+            Interview()
+
+          }.tabBar(this.tabBuilder('面经', $r('app.media.interview'), $r('app.media.interview_select'), 2))
+
+          TabContent() {
+            Mine()
+
+          }.tabBar(this.tabBuilder('我的', $r('app.media.tabbar_mine'), $r('app.media.ic_tabbar_mine_select'), 3))
+
+        }
+        .animationDuration(0) // 去掉切换动画
+        .barPosition(BarPosition.End) // tabs在底部显示
+      }
+      .width('100%')
     }
+    .height('100%')
   }
 }
