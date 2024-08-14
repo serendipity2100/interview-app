@@ -17,6 +17,8 @@ struct LoginPage {
   @State username: string = 'hmheima'
   @State password: string = 'Hmheima%123'
   @State isAgree: boolean = true
+  // 1. 定义一个isLoading
+  @State isLoading: boolean = false
 
   async onLogin() {
     if (this.username.trim() === '') {
@@ -35,6 +37,9 @@ struct LoginPage {
     }
 
     try {
+      // 3. 请求前 设置isLoading为true
+      this.isLoading = true
+
       const res = await instance<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
         url: 'hm/login',
         method: 'post',
@@ -44,15 +49,17 @@ struct LoginPage {
         }
       })
 
-      // 通信成功 并且 业务成功 🔜保存数据到AppStorage中, 跳转页面到首页  提示用户
-      // 2. 处理业务失败的原因
+      // 4. 请求后, 不管成功和失败都要把isLoading改为false
+      this.isLoading = false
+
+
       if (res.data.code !== 10000) {
         promptAction.showToast({ message: res.data.message })
         return
       }
 
       AlertDialog.show({ message: JSON.stringify(res, null, 2), alignment: DialogAlignment.Center })
-      // 3. 处理登录业务成功后的逻辑
+
       promptAction.showToast({ message: '登录成功' })
       AppStorage.setOrCreate('user', res.data.data)
       setTimeout(() => {
@@ -61,7 +68,7 @@ struct LoginPage {
 
 
     } catch (err) {
-      // 1. 提示通信失败的原因
+      this.isLoading = false
       AlertDialog.show({ message: "错误: " + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
     }
 
@@ -130,10 +137,15 @@ struct LoginPage {
 
         Button() {
           Row() {
-            LoadingProgress()
-              .height(28)
-              .aspectRatio(1)
-              .color(Color.White)
+            // 2. 条件渲染
+
+            if (this.isLoading) {
+              LoadingProgress()
+                .height(28)
+                .aspectRatio(1)
+                .color(Color.White)
+            }
+
             Text('登录')
           }
         }
