@@ -1,4 +1,9 @@
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
+
+// 登录-点击事件校验数据
+// 1. 双向绑定 收集用户输入内容
+// 2. 校验数据
+// 3. 校验不通过 提示用户
 
 @Entry
 @Component
@@ -6,6 +11,25 @@ struct LoginPage {
   @State username: string = 'hmheima'
   @State password: string = 'Hmheima%123'
   @State isAgree: boolean = false
+
+  onLogin() {
+    if (this.username.trim() === '') {
+      promptAction.showToast({ message: '请输入用户名' })
+      return
+    }
+
+    if (this.password.trim() === '') {
+      promptAction.showToast({ message: '请输入密码' })
+      return
+    }
+
+    if (!this.isAgree) {
+      promptAction.showToast({ message: '请勾选用户协议' })
+      return
+    }
+
+    promptAction.showToast({ message: 'TODO登录接口' })
+  }
 
   build() {
     Column() {
@@ -28,12 +52,12 @@ struct LoginPage {
       //  登录区域
       Column({ space: 20 }) {
 
-        TextInput({ text: this.username })
+        TextInput({ text: $$this.username })
           .backgroundColor(Color.White)
           .width('90%')
           .borderRadius(0)
 
-        TextInput({ text: this.password })
+        TextInput({ text: $$this.password })
           .type(InputType.Password)
           .backgroundColor(Color.White)
           .width('90%')
@@ -86,6 +110,9 @@ struct LoginPage {
             ['#FCA21C', 0],
             ['#FA6D1D', 1]
           ]
+        })
+        .onClick(() => {
+          this.onLogin()
         })
 
       }
