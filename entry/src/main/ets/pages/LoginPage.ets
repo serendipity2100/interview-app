@@ -1,5 +1,6 @@
 import { promptAction, router } from '@kit.ArkUI'
 import axios, { AxiosResponse } from '@ohos/axios'
+import { instance } from '../common/utils/request'
 import { ILoginBody, IResponseModel } from '../models/AccountModel'
 
 
@@ -34,8 +35,8 @@ struct LoginPage {
       return
     }
 
-    const res = await axios<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
-      url: 'https://api-harmony-teach.itheima.net/hm/login',
+    const res = await instance<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
+      url: 'hm/login',
       method: 'post',
       data: {
         username: this.username,
@@ -44,7 +45,7 @@ struct LoginPage {
     })
     //   res.data
 
-    AlertDialog.show({ message: JSON.stringify(res.data), alignment: DialogAlignment.Center })
+    AlertDialog.show({ message: JSON.stringify(res.data, null, 2), alignment: DialogAlignment.Center })
   }
 
   build() {
