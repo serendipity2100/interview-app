@@ -49,7 +49,15 @@ export struct HdClockIn {
       this.clockCount = res.data.data.clockinNumbers
 
     } catch (err) {
+      if (err.response.status === 401) {
+        promptAction.showToast({ message: '登录过期, 请重新登录' })
 
+        setTimeout(() => {
+          router.pushUrl({ url: 'pages/LoginPage' })
+        }, 500)
+
+        return
+      }
       AlertDialog.show({ message: '失败:' + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
     }
 
