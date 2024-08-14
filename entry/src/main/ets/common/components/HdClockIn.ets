@@ -2,6 +2,7 @@
 import { AxiosResponse } from '@ohos/axios';
 import { iLoginUserModel } from '../../models/AccountModel';
 import { instance } from '../utils/request';
+import { promptAction } from '@kit.ArkUI';
 
 export interface IResModel {
   /** 请求成功 10000 标志  */
@@ -28,19 +29,27 @@ export interface IData {
 export struct HdClockIn {
   @Prop
   clockCount: number = 0
+  // 1.
+  @StorageProp('user')
+  userInfo: iLoginUserModel = {} as iLoginUserModel
 
-  // 需求: 实现发请求查询打卡天数
-  // 1. cv类型
-  // 2. AboutToAppear发请求
   async aboutToAppear() {
     try {
-      // 3. 调用axios发送请求
       const res: AxiosResponse<IResModel> = await instance({
         url: 'hm/clockinInfo',
+        headers: {
+          Authorization: `Bearer ${this.userInfo.token}`
+        }
       })
-      AlertDialog.show({ message: '成功:' + JSON.stringify(res, null, 2), alignment: DialogAlignment.Center })
+
+      if (res.data.code !== 10000) {
+        promptAction.showToast({ message: res.data.message })
+        return
+      }
+
+      this.clockCount = res.data.data.clockinNumbers
+
     } catch (err) {
-      // 4. 踩坑 - 会失败
       AlertDialog.show({ message: '失败:' + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
     }
 
