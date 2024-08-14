@@ -5,11 +5,10 @@ import { ILoginBody, IResponseModel } from '../models/AccountModel'
 
 
 // 登录-✅点击事件校验数据
-// 登录-✅调用接口获取数据, 🔜保存数据到AppStorage中
-// 1. 下包ohpm i @ohos/axios   axios<响应类型,  AxiosResponse<响应类型, 请求类型>, 请求类型>()
-// 2. 定义模型文件
-// 3. 调用接口
-// 4. todo封装
+// 登录-✅调用接口获取数据,
+// 状态码-两种
+// 1. http状态码:  2xx-5xxx 标记通信成功或失败
+// 2. 业务状态码:  xxxx 由后端的文档, 成功的标识
 
 
 @Entry
@@ -17,7 +16,7 @@ import { ILoginBody, IResponseModel } from '../models/AccountModel'
 struct LoginPage {
   @State username: string = 'hmheima'
   @State password: string = 'Hmheima%123'
-  @State isAgree: boolean = false
+  @State isAgree: boolean = true
 
   async onLogin() {
     if (this.username.trim() === '') {
@@ -35,17 +34,37 @@ struct LoginPage {
       return
     }
 
-    const res = await instance<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
-      url: 'hm/login',
-      method: 'post',
-      data: {
-        username: this.username,
-        password: this.password
-      }
-    })
-    //   res.data
+    try {
+      const res = await instance<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
+        url: 'hm/login',
+        method: 'post',
+        data: {
+          username: this.username,
+          password: this.password
+        }
+      })
 
-    AlertDialog.show({ message: JSON.stringify(res.data, null, 2), alignment: DialogAlignment.Center })
+      // 通信成功 并且 业务成功 🔜保存数据到AppStorage中, 跳转页面到首页  提示用户
+      // 2. 处理业务失败的原因
+      if (res.data.code !== 10000) {
+        promptAction.showToast({ message: res.data.message })
+        return
+      }
+
+      AlertDialog.show({ message: JSON.stringify(res, null, 2), alignment: DialogAlignment.Center })
+      // 3. 处理登录业务成功后的逻辑
+      promptAction.showToast({ message: '登录成功' })
+      AppStorage.setOrCreate('user', res.data.data)
+      setTimeout(() => {
+        router.pushUrl({ url: 'pages/Index' })
+      }, 500)
+
+    } catch (err) {
+      // 1. 提示通信失败的原因
+      AlertDialog.show({ message: "错误: " + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
+    }
+
+
   }
 
   build() {
