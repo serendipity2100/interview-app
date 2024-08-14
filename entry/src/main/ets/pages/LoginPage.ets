@@ -30,21 +30,23 @@ struct LoginPage {
 
     try {
       this.isLoading = true
+      // 💥💥 await之后的代码之所以执行,  await接收到了成功的promise状态
       const res = await request<IResponseModel, ILoginBody>({
         url: 'hm/login',
         method: 'post',
         data: {
-          username: this.username,
+          username: this.username + 'xxxx',
           password: this.password
         }
       })
 
+
       this.isLoading = false
 
-      if (res.data.code !== 10000) {
-        promptAction.showToast({ message: res.data.message })
-        return
-      }
+      // if (res.data.code !== 10000) {
+      //
+      //   return
+      // }
 
       promptAction.showToast({ message: '登录成功' })
       AppStorage.setOrCreate('user', res.data.data)

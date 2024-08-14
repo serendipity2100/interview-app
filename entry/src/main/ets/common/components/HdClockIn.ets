@@ -36,15 +36,7 @@ export struct HdClockIn {
     try {
       const res = await request<IResModel>({
         url: 'hm/clockinInfo',
-        // headers: {
-        //   Authorization: `Bearer ${this.userInfo.token}`
-        // }
       })
-
-      if (res.data.code !== 10000) {
-        promptAction.showToast({ message: res.data.message })
-        return
-      }
 
       this.clockCount = res.data.data.clockinNumbers
 
@@ -67,15 +59,8 @@ export struct HdClockIn {
     const res = await request<IResModel>({
       url: 'hm/clockin',
       method: 'post',
-      // headers: {
-      //   Authorization: `Bearer ${this.userInfo.token}`
-      // }
     })
 
-    if (res.data.code !== 10000) {
-      promptAction.showToast({ message: res.data.message })
-      return
-    }
 
     this.clockCount = res.data.data.clockinNumbers
   }
