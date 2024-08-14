@@ -36,9 +36,9 @@ export struct HdClockIn {
     try {
       const res = await request<IResModel>({
         url: 'hm/clockinInfo',
-        headers: {
-          Authorization: `Bearer ${this.userInfo.token.slice(10)}`
-        }
+        // headers: {
+        //   Authorization: `Bearer ${this.userInfo.token}`
+        // }
       })
 
       if (res.data.code !== 10000) {
@@ -67,9 +67,9 @@ export struct HdClockIn {
     const res = await request<IResModel>({
       url: 'hm/clockin',
       method: 'post',
-      headers: {
-        Authorization: `Bearer ${this.userInfo.token}`
-      }
+      // headers: {
+      //   Authorization: `Bearer ${this.userInfo.token}`
+      // }
     })
 
     if (res.data.code !== 10000) {
@@ -77,7 +77,6 @@ export struct HdClockIn {
       return
     }
 
-    // 4. 更新打卡功能
     this.clockCount = res.data.data.clockinNumbers
   }
 

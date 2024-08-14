@@ -30,8 +30,6 @@ struct LoginPage {
 
     try {
       this.isLoading = true
-
-
       const res = await request<IResponseModel, ILoginBody>({
         url: 'hm/login',
         method: 'post',
@@ -41,16 +39,12 @@ struct LoginPage {
         }
       })
 
-
-
       this.isLoading = false
-
 
       if (res.data.code !== 10000) {
         promptAction.showToast({ message: res.data.message })
         return
       }
-
 
       promptAction.showToast({ message: '登录成功' })
       AppStorage.setOrCreate('user', res.data.data)
