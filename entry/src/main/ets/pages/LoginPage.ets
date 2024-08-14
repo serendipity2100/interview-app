@@ -1,6 +1,5 @@
 import { promptAction, router } from '@kit.ArkUI'
-import axios, { AxiosRequestConfig, AxiosResponse } from '@ohos/axios'
-import { instance, request } from '../common/utils/request'
+import { request } from '../common/utils/request'
 import { ILoginBody, IResponseModel } from '../models/AccountModel'
 
 
@@ -33,7 +32,6 @@ struct LoginPage {
       this.isLoading = true
 
 
-      // 2. 使用封装的request文件中的request函数
       const res = await request<IResponseModel, ILoginBody>({
         url: 'hm/login',
         method: 'post',
@@ -43,14 +41,7 @@ struct LoginPage {
         }
       })
 
-      // const res = await instance<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
-      //   url: 'hm/login',
-      //   method: 'post',
-      //   data: {
-      //     username: this.username,
-      //     password: this.password
-      //   }
-      // })
+
 
       this.isLoading = false
 

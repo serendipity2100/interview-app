@@ -1,7 +1,7 @@
 // 接口返回数据的类型
 import { iLoginUserModel } from '../../models/AccountModel';
 import { request } from '../utils/request';
-import { promptAction } from '@kit.ArkUI';
+import { promptAction, router } from '@kit.ArkUI';
 
 export interface IResModel {
   /** 请求成功 10000 标志  */
@@ -34,11 +34,10 @@ export struct HdClockIn {
   async aboutToAppear() {
 
     try {
-      // 4. 改造打卡组件中的调用方式
       const res = await request<IResModel>({
         url: 'hm/clockinInfo',
         headers: {
-          Authorization: `Bearer ${this.userInfo.token}`
+          Authorization: `Bearer ${this.userInfo.token.slice(10)}`
         }
       })
 
@@ -50,13 +49,13 @@ export struct HdClockIn {
       this.clockCount = res.data.data.clockinNumbers
 
     } catch (err) {
+
       AlertDialog.show({ message: '失败:' + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
     }
 
   }
 
   async onClock() {
-    // 4. 改造打卡组件中的调用方式
     const res = await request<IResModel>({
       url: 'hm/clockin',
       method: 'post',
