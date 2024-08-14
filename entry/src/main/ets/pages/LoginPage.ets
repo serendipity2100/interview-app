@@ -59,6 +59,7 @@ struct LoginPage {
         router.pushUrl({ url: 'pages/Index' })
       }, 500)
 
+
     } catch (err) {
       // 1. 提示通信失败的原因
       AlertDialog.show({ message: "错误: " + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
