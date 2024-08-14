@@ -1,14 +1,7 @@
 import { promptAction, router } from '@kit.ArkUI'
 import axios, { AxiosRequestConfig, AxiosResponse } from '@ohos/axios'
-import { instance } from '../common/utils/request'
+import { instance, request } from '../common/utils/request'
 import { ILoginBody, IResponseModel } from '../models/AccountModel'
-
-
-// 登录-✅点击事件校验数据
-// 登录-✅调用接口获取数据,
-// 状态码-两种
-// 1. http状态码:  2xx-5xxx 标记通信成功或失败
-// 2. 业务状态码:  xxxx 由后端的文档, 成功的标识
 
 
 @Entry
@@ -19,10 +12,6 @@ struct LoginPage {
   @State isAgree: boolean = true
   // 1. 定义一个isLoading
   @State isLoading: boolean = false
-
-  xxxInstance<T, D>(config: AxiosRequestConfig<D>) {
-    return instance<null, AxiosResponse<T, null>, D>(config)
-  }
 
   async onLogin() {
     if (this.username.trim() === '') {
@@ -44,7 +33,8 @@ struct LoginPage {
       this.isLoading = true
 
 
-      const res = await this.xxxInstance<IResponseModel, ILoginBody>({
+      // 2. 使用封装的request文件中的request函数
+      const res = await request<IResponseModel, ILoginBody>({
         url: 'hm/login',
         method: 'post',
         data: {

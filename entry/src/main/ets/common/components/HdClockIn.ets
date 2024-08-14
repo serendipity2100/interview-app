@@ -1,7 +1,6 @@
 // 接口返回数据的类型
-import { AxiosResponse } from '@ohos/axios';
 import { iLoginUserModel } from '../../models/AccountModel';
-import { instance } from '../utils/request';
+import { request } from '../utils/request';
 import { promptAction } from '@kit.ArkUI';
 
 export interface IResModel {
@@ -33,9 +32,10 @@ export struct HdClockIn {
   userInfo: iLoginUserModel = {} as iLoginUserModel
 
   async aboutToAppear() {
-    // 1. 注释查询打卡的代码
+
     try {
-      const res: AxiosResponse<IResModel> = await instance({
+      // 4. 改造打卡组件中的调用方式
+      const res = await request<IResModel>({
         url: 'hm/clockinInfo',
         headers: {
           Authorization: `Bearer ${this.userInfo.token}`
@@ -56,8 +56,8 @@ export struct HdClockIn {
   }
 
   async onClock() {
-    //   3. 调用axios发请求 实现打卡
-    const res: AxiosResponse<IResModel> = await instance({
+    // 4. 改造打卡组件中的调用方式
+    const res = await request<IResModel>({
       url: 'hm/clockin',
       method: 'post',
       headers: {
