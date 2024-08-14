@@ -33,36 +33,16 @@ export struct HdClockIn {
 
   async aboutToAppear() {
 
-    try {
-      const res = await request<IResModel>({
-        url: 'hm/clockinInfo',
-        method: 'deletexxxx'
-      })
-
-      this.clockCount = res.data.data.clockinNumbers
-
-    } catch (err) {
-      if (err.response.status === 401) {
-        promptAction.showToast({ message: '登录过期, 请重新登录' })
-
-        setTimeout(() => {
-          router.pushUrl({ url: 'pages/LoginPage' })
-        }, 500)
-
-        return
-      }
-    }
+    const res = await request<IResModel>({ url: 'hm/clockinInfo', method: 'delete' })
+    this.clockCount = res.data.data.clockinNumbers
 
   }
 
   async onClock() {
-    const res = await request<IResModel>({
-      url: 'hm/clockin',
-      method: 'post',
-    })
 
-
+    const res = await request<IResModel>({ url: 'hm/clockin', method: 'post', })
     this.clockCount = res.data.data.clockinNumbers
+
   }
 
   build() {

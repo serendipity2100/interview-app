@@ -31,6 +31,7 @@ struct LoginPage {
     try {
       this.isLoading = true
       // 💥💥 await之后的代码之所以执行,  await接收到了成功的promise状态
+
       const res = await request<IResponseModel, ILoginBody>({
         url: 'hm/login',
         method: 'post',
@@ -40,7 +41,6 @@ struct LoginPage {
         }
       })
 
-
       this.isLoading = false
 
       promptAction.showToast({ message: '登录成功' })
@@ -49,10 +49,8 @@ struct LoginPage {
         router.pushUrl({ url: 'pages/Index' })
       }, 500)
 
-
     } catch (err) {
       this.isLoading = false
-
     }
 
 
