@@ -29,30 +29,49 @@ export interface IData {
 export struct HdClockIn {
   @Prop
   clockCount: number = 0
-  // 1.
   @StorageProp('user')
   userInfo: iLoginUserModel = {} as iLoginUserModel
 
   async aboutToAppear() {
-    try {
-      const res: AxiosResponse<IResModel> = await instance({
-        url: 'hm/clockinInfo',
-        headers: {
-          Authorization: `Bearer ${this.userInfo.token}`
-        }
-      })
+    // 1. 注释查询打卡的代码
+    // try {
+    //   const res: AxiosResponse<IResModel> = await instance({
+    //     url: 'hm/clockinInfo',
+    //     headers: {
+    //       Authorization: `Bearer ${this.userInfo.token}`
+    //     }
+    //   })
+    //
+    //   if (res.data.code !== 10000) {
+    //     promptAction.showToast({ message: res.data.message })
+    //     return
+    //   }
+    //
+    //   this.clockCount = res.data.data.clockinNumbers
+    //
+    // } catch (err) {
+    //   AlertDialog.show({ message: '失败:' + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
+    // }
 
-      if (res.data.code !== 10000) {
-        promptAction.showToast({ message: res.data.message })
-        return
+  }
+
+  async onClock() {
+    //   3. 调用axios发请求 实现打卡
+    const res: AxiosResponse<IResModel> = await instance({
+      url: 'hm/clockin',
+      method: 'post',
+      headers: {
+        Authorization: `Bearer ${this.userInfo.token}`
       }
+    })
 
-      this.clockCount = res.data.data.clockinNumbers
-
-    } catch (err) {
-      AlertDialog.show({ message: '失败:' + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
+    if (res.data.code !== 10000) {
+      promptAction.showToast({ message: res.data.message })
+      return
     }
 
+    // 4. 更新打卡功能
+    this.clockCount = res.data.data.clockinNumbers
   }
 
   build() {
@@ -80,6 +99,9 @@ export struct HdClockIn {
           .fontWeight(500)
           .fontColor('#333C4F')
           .margin({ bottom: (4) })
+          .onClick(() => {
+            this.onClock()
+          })
       }
     }
     .width((74))
