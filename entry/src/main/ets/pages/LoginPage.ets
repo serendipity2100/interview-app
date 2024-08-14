@@ -1,9 +1,15 @@
 import { promptAction, router } from '@kit.ArkUI'
+import axios, { AxiosResponse } from '@ohos/axios'
+import { ILoginBody, IResponseModel } from '../models/AccountModel'
 
-// 登录-点击事件校验数据
-// 1. 双向绑定 收集用户输入内容
-// 2. 校验数据
-// 3. 校验不通过 提示用户
+
+// 登录-✅点击事件校验数据
+// 登录-✅调用接口获取数据, 🔜保存数据到AppStorage中
+// 1. 下包ohpm i @ohos/axios   axios<响应类型,  AxiosResponse<响应类型, 请求类型>, 请求类型>()
+// 2. 定义模型文件
+// 3. 调用接口
+// 4. todo封装
+
 
 @Entry
 @Component
@@ -12,7 +18,7 @@ struct LoginPage {
   @State password: string = 'Hmheima%123'
   @State isAgree: boolean = false
 
-  onLogin() {
+  async onLogin() {
     if (this.username.trim() === '') {
       promptAction.showToast({ message: '请输入用户名' })
       return
@@ -28,7 +34,17 @@ struct LoginPage {
       return
     }
 
-    promptAction.showToast({ message: 'TODO登录接口' })
+    const res = await axios<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
+      url: 'https://api-harmony-teach.itheima.net/hm/login',
+      method: 'post',
+      data: {
+        username: this.username,
+        password: this.password
+      }
+    })
+    //   res.data
+
+    AlertDialog.show({ message: JSON.stringify(res.data), alignment: DialogAlignment.Center })
   }
 
   build() {
