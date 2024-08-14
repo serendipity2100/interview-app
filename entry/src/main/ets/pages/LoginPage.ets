@@ -35,18 +35,13 @@ struct LoginPage {
         url: 'hm/login',
         method: 'post',
         data: {
-          username: this.username + 'xxxx',
+          username: this.username,
           password: this.password
         }
       })
 
 
       this.isLoading = false
-
-      // if (res.data.code !== 10000) {
-      //
-      //   return
-      // }
 
       promptAction.showToast({ message: '登录成功' })
       AppStorage.setOrCreate('user', res.data.data)
@@ -57,7 +52,7 @@ struct LoginPage {
 
     } catch (err) {
       this.isLoading = false
-      AlertDialog.show({ message: "错误: " + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
+
     }
 
 

@@ -43,24 +43,20 @@ instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 instance.interceptors.response.use(
   (res: AxiosResponse) => {
 
-    // 1. 添加响应拦截器
-
-    // 2. 判断10000业务状态码异常
     if (res.data.code !== 10000) {
-      // 3.  提示用户
       promptAction.showToast({ message: res.data.message })
-
-      //4. 返回失败状态,  阻止后续代码执行
       return Promise.reject(res)
     }
 
-    // 5. 成功时, 正常返回响应数据
     return res;
 
-    //   6. 组件调用接口时, 删除掉判断10000的逻辑
   },
   (error: AxiosError) => {
+    // 失败时自定执行的回调
 
-    // 失败时的响应
+    // 1. 统一提示接口错误
+
+    // 2. 去组件中把接口调用的alert提示都删除掉
+    AlertDialog.show({ message: '接口调用失败' + JSON.stringify(error, null, 2), alignment: DialogAlignment.Center })
     return Promise.reject(error);
   });

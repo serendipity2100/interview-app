@@ -36,6 +36,7 @@ export struct HdClockIn {
     try {
       const res = await request<IResModel>({
         url: 'hm/clockinInfo',
+        method: 'deletexxxx'
       })
 
       this.clockCount = res.data.data.clockinNumbers
@@ -50,7 +51,6 @@ export struct HdClockIn {
 
         return
       }
-      AlertDialog.show({ message: '失败:' + JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
     }
 
   }
