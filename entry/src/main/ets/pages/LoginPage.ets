@@ -58,7 +58,6 @@ struct LoginPage {
         return
       }
 
-      AlertDialog.show({ message: JSON.stringify(res, null, 2), alignment: DialogAlignment.Center })
 
       promptAction.showToast({ message: '登录成功' })
       AppStorage.setOrCreate('user', res.data.data)
