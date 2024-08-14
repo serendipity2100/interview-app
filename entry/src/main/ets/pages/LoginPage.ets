@@ -1,5 +1,5 @@
 import { promptAction, router } from '@kit.ArkUI'
-import axios, { AxiosResponse } from '@ohos/axios'
+import axios, { AxiosRequestConfig, AxiosResponse } from '@ohos/axios'
 import { instance } from '../common/utils/request'
 import { ILoginBody, IResponseModel } from '../models/AccountModel'
 
@@ -20,6 +20,10 @@ struct LoginPage {
   // 1. 定义一个isLoading
   @State isLoading: boolean = false
 
+  xxxInstance<T, D>(config: AxiosRequestConfig<D>) {
+    return instance<null, AxiosResponse<T, null>, D>(config)
+  }
+
   async onLogin() {
     if (this.username.trim() === '') {
       promptAction.showToast({ message: '请输入用户名' })
@@ -37,10 +41,10 @@ struct LoginPage {
     }
 
     try {
-      // 3. 请求前 设置isLoading为true
       this.isLoading = true
 
-      const res = await instance<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
+
+      const res = await this.xxxInstance<IResponseModel, ILoginBody>({
         url: 'hm/login',
         method: 'post',
         data: {
@@ -49,7 +53,15 @@ struct LoginPage {
         }
       })
 
-      // 4. 请求后, 不管成功和失败都要把isLoading改为false
+      // const res = await instance<null, AxiosResponse<IResponseModel, null>, ILoginBody>({
+      //   url: 'hm/login',
+      //   method: 'post',
+      //   data: {
+      //     username: this.username,
+      //     password: this.password
+      //   }
+      // })
+
       this.isLoading = false
 
 
