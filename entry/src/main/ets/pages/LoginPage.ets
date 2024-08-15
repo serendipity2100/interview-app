@@ -9,7 +9,6 @@ struct LoginPage {
   @State username: string = 'hmheima'
   @State password: string = 'Hmheima%123'
   @State isAgree: boolean = true
-  // 1. 定义一个isLoading
   @State isLoading: boolean = false
 
   async onLogin() {
@@ -30,7 +29,7 @@ struct LoginPage {
 
     try {
       this.isLoading = true
-      // 💥💥 await之后的代码之所以执行,  await接收到了成功的promise状态
+      // 💥💥 await之后的代码之所以执行, 是因为 await接收到了成功的promise状态
 
       const res = await request<IResponseModel, ILoginBody>({
         url: 'hm/login',
