@@ -1,5 +1,6 @@
 import { HdClockIn } from '../../common/components/HdClockIn'
 import { HdSearch } from '../../common/components/HdSearch'
+import { HomeCategoryComp } from './HomeCategoryComp'
 
 @Component
 export struct Home {
@@ -36,9 +37,12 @@ export struct Home {
       .indicator(DotIndicator.dot()
         .selectedColor(Color.White)
         .bottom(20))
+
+      HomeCategoryComp()
     }
     .padding({ top: this.topHeight })
     .height('100%')
     .width('100%')
   }
 }
+
