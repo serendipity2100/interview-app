@@ -7,7 +7,7 @@
 
 import { HmCalendar } from '@ohmos/calendar'
 import { promptAction } from '@kit.ArkUI'
-import { HdLoading } from '../common/components/HdLoading'
+import { HdLoadingDialog } from '../common/components/HdLoading'
 
 @Entry
 @Component
@@ -15,7 +15,7 @@ struct Index {
   // 2. new 创建控制器
   xxx = new CustomDialogController({
     // 表示如何渲染弹出层
-    builder: HdLoading(),
+    builder: HdLoadingDialog(),
     // 自定义样式
     customStyle: true,
     // alignment: DialogAlignment.TopStart

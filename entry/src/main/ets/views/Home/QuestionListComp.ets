@@ -1,3 +1,4 @@
+import { HdLoadingDialog } from '../../common/components/HdLoading';
 import { request } from '../../common/utils/request';
 import { QuestionItem, QuestionItemComp } from './QuestionItemComp'
 
@@ -20,8 +21,12 @@ export struct QuestionListComp {
   @State questionList: QuestionItem[] = []
   @State isRefreshing: boolean = false
   page = 0
-  // 1. 定义变量, 表示是否正在请求中
   isRequesting = false
+  // 2. 创建控制器
+  dialogController = new CustomDialogController({
+    builder: HdLoadingDialog(),
+    customStyle: true
+  })
 
   async onFresh() {
     const res = await request<iListData>({
@@ -37,16 +42,14 @@ export struct QuestionListComp {
   }
 
   async onLoadMore() {
-    // 4. 判断如果正在请求, 不许再次发请求
     if (this.isRequesting === true) {
       return
     }
 
-    // 2. 每次请求前, 标记正在请求
     this.isRequesting = true
 
     this.page++
-    console.log('请求的页数 -----> ', this.page)
+    this.dialogController.open()
     const res = await request<iListData>({
       url: 'hm/question/list',
       params: {
@@ -55,9 +58,9 @@ export struct QuestionListComp {
         page: this.page
       }
     });
+    this.dialogController.close()
     this.questionList.push(...res.data.data.rows);
 
-    // 3. 每次请求后, 标记请求结束
     this.isRequesting = false
   }
 
