@@ -6,7 +6,6 @@ export const instance = axios.create({
   baseURL: 'https://api-harmony-teach.itheima.net/'
 })
 
-// 1. 定义一个泛型接口interface , 不写死data的类型
 export interface IRes<T> {
   /** 请求成功10000标志 */
   code: number;
@@ -22,9 +21,7 @@ export interface IRes<T> {
 }
 
 export function request<T = null, D = null>(config: AxiosRequestConfig<D>) {
-  // 原本T代表的市响应类型res , res是由四个属性组成
-  // return instance<null, AxiosResponse<响应类型, null>, D>(config)
-  // 2. 改造响应类型的穿类型
+
   return instance<null, AxiosResponse<IRes<T>, null>, D>(config)
 }
 

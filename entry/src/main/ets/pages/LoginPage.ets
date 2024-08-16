@@ -29,10 +29,7 @@ struct LoginPage {
 
     try {
       this.isLoading = true
-      // 💥💥 await之后的代码之所以执行, 是因为 await接收到了成功的promise状态
 
-      // 3. 登录中接口只传data的类型
-      // 4. 打卡组件中接口只传data的类型
       const res = await request<iLoginUserModel, ILoginBody>({
         url: 'hm/login',
         method: 'post',

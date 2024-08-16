@@ -1,7 +1,6 @@
 // 接口返回数据的类型
 import { iLoginUserModel } from '../../models/AccountModel';
 import { request } from '../utils/request';
-import { promptAction, router } from '@kit.ArkUI';
 
 
 // 返回数据
