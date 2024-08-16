@@ -7,14 +7,12 @@ export struct HomeCategoryComp {
   questionTypeList: IQuestionType[] = []
   @State index: number = 0
 
-  // 1. 请求数据
   aboutToAppear(): void {
     this.loadTypeData()
   }
 
   async loadTypeData() {
     const res = await request<IQuestionType[]>({ url: 'hm/question/type' })
-    // 2. 保存数据
     this.questionTypeList = res.data.data
   }
 
