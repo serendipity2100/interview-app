@@ -1,7 +1,6 @@
 import { HmCalendar, HmCalendarSelectedDay } from '@ohmos/calendar'
 import { request } from '../common/utils/request'
 import { IClockData } from '../models/ClockModel'
-import { promptAction } from '@kit.ArkUI'
 
 
 @Entry
@@ -16,9 +15,7 @@ export struct ClockPage {
     this.getClockData()
   }
 
-  // 3. 改造形参和类型
   async getClockData(xxx?: string) {
-    // 4. 切割字符串
     let year = ''
     let month = ''
     if (xxx) {
@@ -29,7 +26,6 @@ export struct ClockPage {
 
     const res = await request<IClockData>({
       url: 'hm/clockinInfo',
-      // 5. 传参params query
       params: {
         year: year,
         month: month
@@ -63,9 +59,7 @@ export struct ClockPage {
           HmCalendar({
             color: '#0094ff',
             selectedDays: this.selectedDays,
-            // 1. 监听切换月份
             onChangeMonth: (month) => {
-              //   2. 复用查询请求函数, 传参月份
               this.getClockData(month)
             }
           })
