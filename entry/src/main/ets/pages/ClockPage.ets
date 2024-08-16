@@ -1,4 +1,6 @@
 import { HmCalendar } from '@ohmos/calendar'
+import { request } from '../common/utils/request'
+import { IClockData } from '../models/ClockModel'
 
 @Entry
 @Component
@@ -6,6 +8,18 @@ export struct ClockPage {
   @StorageProp("topHeight") topHeight: number = 0
   @State totalClockinNumber: number = 0 //累计打卡
   @State clockinNumbers: number = 0 //连续打卡
+
+  aboutToAppear(): void {
+    this.getClockData()
+  }
+
+  async getClockData() {
+    // 2. 请求数据
+    const res = await request<IClockData>({ url: 'hm/clockinInfo' })
+    //   3. 存数据
+    this.totalClockinNumber = res.data.data.totalClockinNumber
+    this.clockinNumbers = res.data.data.clockinNumbers
+  }
 
   build() {
     Navigation() {

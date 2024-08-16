@@ -2,13 +2,7 @@
 import { iLoginUserModel } from '../../models/AccountModel';
 import { request } from '../utils/request';
 import { router } from '@kit.ArkUI';
-
-
-// 返回数据
-export interface IData {
-  /** 连续签到天数  */
-  clockinNumbers: number;
-}
+import { IClockData } from '../../models/ClockModel';
 
 
 @Component
@@ -20,15 +14,16 @@ export struct HdClockIn {
 
   async aboutToAppear() {
 
+    // 4. 在打卡组件中复用类型
     // 💥 删除掉故意演示的bug
-    const res = await request<IData>({ url: 'hm/clockinInfo' })
+    const res = await request<IClockData>({ url: 'hm/clockinInfo' })
     this.clockCount = res.data.data.clockinNumbers
 
   }
 
   async onClock() {
 
-    const res = await request<IData>({ url: 'hm/clockin', method: 'post', })
+    const res = await request<IClockData>({ url: 'hm/clockin', method: 'post', })
     this.clockCount = res.data.data.clockinNumbers
 
   }
