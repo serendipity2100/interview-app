@@ -1,12 +1,8 @@
 import { HmCalendar, HmCalendarSelectedDay } from '@ohmos/calendar'
 import { request } from '../common/utils/request'
 import { IClockData } from '../models/ClockModel'
+import { promptAction } from '@kit.ArkUI'
 
-
-// 需求: 实现渲染日历高亮
-// 1. 定义一个高亮的数组 - 状态变量
-// 2. 把状态变量传给日历组件
-// 3. 把服务器给我的数据，更新到状态变量上
 
 @Entry
 @Component
@@ -14,18 +10,33 @@ export struct ClockPage {
   @StorageProp("topHeight") topHeight: number = 0
   @State totalClockinNumber: number = 0 //累计打卡
   @State clockinNumbers: number = 0 //连续打卡
-  // 1. 定义一个高亮的数组 - 状态变量
   @State selectedDays: HmCalendarSelectedDay[] = []
 
   aboutToAppear(): void {
     this.getClockData()
   }
 
-  async getClockData() {
-    const res = await request<IClockData>({ url: 'hm/clockinInfo' })
+  // 3. 改造形参和类型
+  async getClockData(xxx?: string) {
+    // 4. 切割字符串
+    let year = ''
+    let month = ''
+    if (xxx) {
+      const list = xxx?.split('-')
+      year = list[0]
+      month = list[1]
+    }
+
+    const res = await request<IClockData>({
+      url: 'hm/clockinInfo',
+      // 5. 传参params query
+      params: {
+        year: year,
+        month: month
+      }
+    })
     this.totalClockinNumber = res.data.data.totalClockinNumber
     this.clockinNumbers = res.data.data.clockinNumbers
-    // 3. 把服务器给我的数据，更新到状态变量上
     this.selectedDays = res.data.data.clockins.map((item) => {
       return { date: item.createdAt } as HmCalendarSelectedDay
     })
@@ -51,8 +62,12 @@ export struct ClockPage {
         Row() {
           HmCalendar({
             color: '#0094ff',
-            // 2. 把状态变量传给日历组件
-            selectedDays: this.selectedDays
+            selectedDays: this.selectedDays,
+            // 1. 监听切换月份
+            onChangeMonth: (month) => {
+              //   2. 复用查询请求函数, 传参月份
+              this.getClockData(month)
+            }
           })
             .borderRadius(8)
             .border({ width: 0.5, color: '#ededed' })
