@@ -1,6 +1,12 @@
-import { HmCalendar } from '@ohmos/calendar'
+import { HmCalendar, HmCalendarSelectedDay } from '@ohmos/calendar'
 import { request } from '../common/utils/request'
 import { IClockData } from '../models/ClockModel'
+
+
+// 需求: 实现渲染日历高亮
+// 1. 定义一个高亮的数组 - 状态变量
+// 2. 把状态变量传给日历组件
+// 3. 把服务器给我的数据，更新到状态变量上
 
 @Entry
 @Component
@@ -8,6 +14,8 @@ export struct ClockPage {
   @StorageProp("topHeight") topHeight: number = 0
   @State totalClockinNumber: number = 0 //累计打卡
   @State clockinNumbers: number = 0 //连续打卡
+  // 1. 定义一个高亮的数组 - 状态变量
+  @State selectedDays: HmCalendarSelectedDay[] = []
 
   aboutToAppear(): void {
     this.getClockData()
@@ -17,6 +25,11 @@ export struct ClockPage {
     const res = await request<IClockData>({ url: 'hm/clockinInfo' })
     this.totalClockinNumber = res.data.data.totalClockinNumber
     this.clockinNumbers = res.data.data.clockinNumbers
+    // 3. 把服务器给我的数据，更新到状态变量上
+    this.selectedDays = res.data.data.clockins.map((item) => {
+      return { date: item.createdAt } as HmCalendarSelectedDay
+    })
+
   }
 
   build() {
@@ -38,11 +51,8 @@ export struct ClockPage {
         Row() {
           HmCalendar({
             color: '#0094ff',
-            selectedDays: [
-              { date: '2024-05-01' },
-              { date: '2024-05-10' },
-              { date: '2024-05-20' },
-            ]
+            // 2. 把状态变量传给日历组件
+            selectedDays: this.selectedDays
           })
             .borderRadius(8)
             .border({ width: 0.5, color: '#ededed' })
