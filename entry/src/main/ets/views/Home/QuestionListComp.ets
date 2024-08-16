@@ -14,17 +14,23 @@ export interface iListData {
   total: number;
 }
 
+// 需求: 触底加载更多
+// 1. 拼接数据到数组的后面
+// 2. 监听触底
+
 
 @Component
 export struct QuestionListComp {
   @Prop typeId: number
   @State questionList: QuestionItem[] = []
   @State isRefreshing: boolean = false
+  // 1. 定义变量page
+  page = 0
 
-  async aboutToAppear() {
-    await this.onFresh();
-
-  }
+  // 5. 不再需要AboutToAppear发请求
+  // async aboutToAppear() {
+  //   await this.onFresh();
+  // }
 
   async onFresh() {
     const res = await request<iListData>({
@@ -39,12 +45,27 @@ export struct QuestionListComp {
 
   }
 
+  async onLoadMore() {
+
+    // 3.  page++  发请求,传参page
+    this.page++
+
+    console.log('请求的页数 -----> ', this.page)
+    const res = await request<iListData>({
+      url: 'hm/question/list',
+      params: {
+        questionBankType: 10,
+        type: this.typeId,
+        page: this.page
+      }
+    });
+
+    // 4. 拼接数据
+    this.questionList.push(...res.data.data.rows);
+  }
+
   build() {
-    // 1. 使用Refresh包住所有的代码
-    // 2. 定义一个状态变量, 做双向
-    // 3. 监听下拉刷新事件
-    // 4. 重新发请求
-    // 5. 关闭下拉刷新的开关变量
+
     Refresh({ refreshing: $$this.isRefreshing }) {
       List() {
         ForEach(this.questionList, (item: QuestionItem) => {
@@ -57,6 +78,11 @@ export struct QuestionListComp {
 
         })
       }
+      .onReachEnd(() => {
+        // 2. 监听触底事件
+
+        this.onLoadMore()
+      })
     }
     .onRefreshing(async () => {
       await this.onFresh()
