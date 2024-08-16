@@ -3,19 +3,6 @@ import { iLoginUserModel } from '../../models/AccountModel';
 import { request } from '../utils/request';
 import { promptAction, router } from '@kit.ArkUI';
 
-export interface IResModel {
-  /** 请求成功 10000 标志  */
-  code: number;
-
-  /** 返回数据  */
-  data: IData;
-
-  /** 请求成功  */
-  message: string;
-
-  /** 请求成功标志  */
-  success: boolean;
-}
 
 // 返回数据
 export interface IData {
@@ -33,14 +20,14 @@ export struct HdClockIn {
 
   async aboutToAppear() {
 
-    const res = await request<IResModel>({ url: 'hm/clockinInfo', method: 'delete' })
+    const res = await request<IData>({ url: 'hm/clockinInfo', method: 'delete' })
     this.clockCount = res.data.data.clockinNumbers
 
   }
 
   async onClock() {
 
-    const res = await request<IResModel>({ url: 'hm/clockin', method: 'post', })
+    const res = await request<IData>({ url: 'hm/clockin', method: 'post', })
     this.clockCount = res.data.data.clockinNumbers
 
   }

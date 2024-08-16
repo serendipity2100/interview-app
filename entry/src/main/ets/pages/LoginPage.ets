@@ -1,6 +1,6 @@
 import { promptAction, router } from '@kit.ArkUI'
 import { request } from '../common/utils/request'
-import { ILoginBody, IResponseModel } from '../models/AccountModel'
+import { ILoginBody, iLoginUserModel } from '../models/AccountModel'
 
 
 @Entry
@@ -31,7 +31,9 @@ struct LoginPage {
       this.isLoading = true
       // 💥💥 await之后的代码之所以执行, 是因为 await接收到了成功的promise状态
 
-      const res = await request<IResponseModel, ILoginBody>({
+      // 3. 登录中接口只传data的类型
+      // 4. 打卡组件中接口只传data的类型
+      const res = await request<iLoginUserModel, ILoginBody>({
         url: 'hm/login',
         method: 'post',
         data: {
@@ -41,6 +43,7 @@ struct LoginPage {
       })
 
       this.isLoading = false
+
 
       promptAction.showToast({ message: '登录成功' })
       AppStorage.setOrCreate('user', res.data.data)
