@@ -19,7 +19,8 @@ export struct HdClockIn {
 
   async aboutToAppear() {
 
-    const res = await request<IData>({ url: 'hm/clockinInfo', method: 'delete' })
+    // 💥 删除掉故意演示的bug
+    const res = await request<IData>({ url: 'hm/clockinInfo' })
     this.clockCount = res.data.data.clockinNumbers
 
   }

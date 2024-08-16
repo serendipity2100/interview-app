@@ -31,7 +31,8 @@ instance.interceptors.request.use(
 
     const user = AppStorage.get('user') as iLoginUserModel
     if (user !== undefined) {
-      config.headers.Authorization = `Bearer ${user.token.slice(10)}`
+      // 💥删除bug
+      config.headers.Authorization = `Bearer ${user.token}`
     }
 
     return config;
