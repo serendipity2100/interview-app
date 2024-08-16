@@ -50,7 +50,13 @@ export struct HomeCategoryComp {
   renderFilter() {
     Column() {
 
-      QuestionFilterComp()
+      // 1. 父传子 分类列表
+      QuestionFilterComp({
+        questionTypeList: this.questionTypeList,
+        onSubmit: () => {
+          this.isShow = false
+        }
+      })
     }
   }
 
@@ -87,7 +93,7 @@ export struct HomeCategoryComp {
       .justifyContent(FlexAlign.Center) // 图片居中对齐
       .backgroundColor(Color.White) // 设置背景色位白色，使过滤条件图标能遮盖住tabbar的文字
       .bindSheet($$this.isShow, this.renderFilter(), {
-        height: SheetSize.MEDIUM,
+        height: 400,
         showClose: false
       })
     }

@@ -13,7 +13,6 @@ export class FilterParams {
 @Entry
 @Component
 export struct QuestionFilterComp {
-  // controller: CustomDialogController
   @Prop
   questionTypeList: IQuestionType[] = []
   @Prop
@@ -21,6 +20,7 @@ export struct QuestionFilterComp {
   // onSubmit
   // 子组件中定义了一个函数的变量，用来接收父组件传过来的方法
   onSubmit: (params: FilterParams) => void = () => {
+
   }
 
   @Builder
