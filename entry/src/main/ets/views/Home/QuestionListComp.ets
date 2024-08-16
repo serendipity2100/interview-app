@@ -14,23 +14,13 @@ export interface iListData {
   total: number;
 }
 
-// 需求: 触底加载更多
-// 1. 拼接数据到数组的后面
-// 2. 监听触底
-
 
 @Component
 export struct QuestionListComp {
   @Prop typeId: number
   @State questionList: QuestionItem[] = []
   @State isRefreshing: boolean = false
-  // 1. 定义变量page
   page = 0
-
-  // 5. 不再需要AboutToAppear发请求
-  // async aboutToAppear() {
-  //   await this.onFresh();
-  // }
 
   async onFresh() {
     const res = await request<iListData>({
@@ -47,10 +37,8 @@ export struct QuestionListComp {
 
   async onLoadMore() {
 
-    // 3.  page++  发请求,传参page
     this.page++
 
-    console.log('请求的页数 -----> ', this.page)
     const res = await request<iListData>({
       url: 'hm/question/list',
       params: {
@@ -60,7 +48,6 @@ export struct QuestionListComp {
       }
     });
 
-    // 4. 拼接数据
     this.questionList.push(...res.data.data.rows);
   }
 
@@ -79,8 +66,6 @@ export struct QuestionListComp {
         })
       }
       .onReachEnd(() => {
-        // 2. 监听触底事件
-
         this.onLoadMore()
       })
     }
