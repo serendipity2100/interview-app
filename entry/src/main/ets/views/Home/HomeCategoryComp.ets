@@ -1,5 +1,6 @@
 import { request } from '../../common/utils/request'
 import { IQuestionType } from '../../models/CategoryModel'
+import { QuestionListComp } from './QuestionListComp'
 
 @Component
 export struct HomeCategoryComp {
@@ -48,7 +49,7 @@ export struct HomeCategoryComp {
       Tabs({ index: this.index }) {
         ForEach(this.questionTypeList, (item: IQuestionType, index: number) => {
           TabContent() {
-            Text('题目列表' + index)
+            QuestionListComp()
           }.tabBar(this.TabItemBuilder(item, index))
         })
       }
