@@ -2,6 +2,8 @@ import { HdClockIn } from '../../common/components/HdClockIn'
 import { HdSearch } from '../../common/components/HdSearch'
 import { HomeCategoryComp } from './HomeCategoryComp'
 
+// 1. 准备
+
 @Component
 export struct Home {
   // 获取AppStorage中的数据

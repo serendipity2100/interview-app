@@ -1,22 +1,22 @@
+import { request } from '../../common/utils/request'
 import { IQuestionType } from '../../models/CategoryModel'
-
 
 @Component
 export struct HomeCategoryComp {
   @State
-  questionTypeList: IQuestionType[] = [
-    {
-      id: 1,
-      name: 'html',
-      displayNewestFlag: 0
-    },
-    {
-      id: 2,
-      name: 'css',
-      displayNewestFlag: 1
-    }
-  ]
+  questionTypeList: IQuestionType[] = []
   @State index: number = 0
+
+  // 1. 请求数据
+  aboutToAppear(): void {
+    this.loadTypeData()
+  }
+
+  async loadTypeData() {
+    const res = await request<IQuestionType[]>({ url: 'hm/question/type' })
+    // 2. 保存数据
+    this.questionTypeList = res.data.data
+  }
 
   @Builder
   TabItemBuilder(q: IQuestionType, index: number) {
