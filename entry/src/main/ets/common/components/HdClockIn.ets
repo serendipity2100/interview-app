@@ -1,6 +1,7 @@
 // 接口返回数据的类型
 import { iLoginUserModel } from '../../models/AccountModel';
 import { request } from '../utils/request';
+import { router } from '@kit.ArkUI';
 
 
 // 返回数据
@@ -49,6 +50,9 @@ export struct HdClockIn {
           }
         }
         .width('50')
+        .onClick(() => {
+          router.pushUrl({ url: 'pages/ClockPage' })
+        })
       } else {
         Text('打卡')
           .width('50')
