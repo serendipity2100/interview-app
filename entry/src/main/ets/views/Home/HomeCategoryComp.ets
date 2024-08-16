@@ -1,5 +1,6 @@
 import { request } from '../../common/utils/request'
 import { IQuestionType } from '../../models/CategoryModel'
+import { QuestionFilterComp } from './QuestionFilterComp'
 import { QuestionListComp } from './QuestionListComp'
 
 @Component
@@ -7,6 +8,7 @@ export struct HomeCategoryComp {
   @State
   questionTypeList: IQuestionType[] = []
   @State index: number = 0
+  @State isShow: boolean = false
 
   aboutToAppear(): void {
     this.loadTypeData()
@@ -44,6 +46,14 @@ export struct HomeCategoryComp {
     .padding({ right: this.questionTypeList.length === index + 1 ? 54 : 16 })
   }
 
+  @Builder
+  renderFilter() {
+    Column() {
+
+      QuestionFilterComp()
+    }
+  }
+
   build() {
     Stack({ alignContent: Alignment.TopEnd }) { //设置堆叠位置为右上角
       Tabs({ index: this.index }) {
@@ -67,12 +77,19 @@ export struct HomeCategoryComp {
         Image($r('app.media.ic_home_filter'))
           .width(22)
           .height(44)
-          .objectFit(ImageFit.Contain) // 设置图片按照容器大小填满
+          .objectFit(ImageFit.Contain)// 设置图片按照容器大小填满
+          .onClick(() => {
+            this.isShow = true
+          })
       }
       .width(54)
       .height(44)
       .justifyContent(FlexAlign.Center) // 图片居中对齐
       .backgroundColor(Color.White) // 设置背景色位白色，使过滤条件图标能遮盖住tabbar的文字
+      .bindSheet($$this.isShow, this.renderFilter(), {
+        height: SheetSize.MEDIUM,
+        showClose: false
+      })
     }
   }
 }

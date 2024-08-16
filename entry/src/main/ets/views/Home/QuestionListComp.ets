@@ -22,9 +22,10 @@ export struct QuestionListComp {
   @State isRefreshing: boolean = false
   page = 0
   isRequesting = false
-  // 2. 创建控制器
   dialogController = new CustomDialogController({
-    builder: HdLoadingDialog(),
+    builder: HdLoadingDialog({
+      message: '加载中...'
+    }),
     customStyle: true
   })
 
