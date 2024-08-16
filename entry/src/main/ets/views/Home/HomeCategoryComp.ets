@@ -1,7 +1,8 @@
 import { request } from '../../common/utils/request'
 import { IQuestionType } from '../../models/CategoryModel'
-import { QuestionFilterComp } from './QuestionFilterComp'
+import { FilterParams, QuestionFilterComp } from './QuestionFilterComp'
 import { QuestionListComp } from './QuestionListComp'
+import { promptAction } from '@kit.ArkUI'
 
 @Component
 export struct HomeCategoryComp {
@@ -9,6 +10,10 @@ export struct HomeCategoryComp {
   questionTypeList: IQuestionType[] = []
   @State index: number = 0
   @State isShow: boolean = false
+  // 1. 定义状态变量
+  @State filterParams: FilterParams = new FilterParams()
+
+  // 3. 子传父修改状态变量
 
   aboutToAppear(): void {
     this.loadTypeData()
@@ -50,12 +55,14 @@ export struct HomeCategoryComp {
   renderFilter() {
     Column() {
 
-      // 1. 父传子 分类列表
       QuestionFilterComp({
         questionTypeList: this.questionTypeList,
         onSubmit: () => {
           this.isShow = false
-        }
+        },
+
+        // 2. 父传子状态变量
+        params: this.filterParams
       })
     }
   }
@@ -76,7 +83,12 @@ export struct HomeCategoryComp {
       }) //设置tabbar下面的横线样式
       .barMode(BarMode.Scrollable) // 设置tabs可以滚动
       .barHeight(44)
-      .onChange(i => this.index = i) // 切换tabbar内容
+      .onChange((index) => {
+        promptAction.showToast({ message: '你点的索引是' + index })
+        this.index = index
+        //   3. 改变选中项时, 更新filterParams
+        this.filterParams.index = index
+      })
 
       Row() {
         // 过滤条件按钮

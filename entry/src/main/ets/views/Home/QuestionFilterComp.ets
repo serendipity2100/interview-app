@@ -4,17 +4,20 @@ import { IQuestionType } from '../../models/CategoryModel'
 
 export class FilterParams {
   // 排序：0 默认 20 浏览量↑ 21 浏览量↓
-  sort: number = 0
+  sort: number = 21 // 0  20  21
   // 阶段ID
-  index: number = 0
+  index: number = 1
 }
 
+// 需求:
+// 1. 同步选中的状态
 
 @Entry
 @Component
 export struct QuestionFilterComp {
   @Prop
   questionTypeList: IQuestionType[] = []
+  // 父传子
   @Prop
   params: FilterParams = new FilterParams() // 表示的是当前面板用户选择的筛选条件
   // onSubmit
