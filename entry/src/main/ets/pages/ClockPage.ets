@@ -14,9 +14,7 @@ export struct ClockPage {
   }
 
   async getClockData() {
-    // 2. 请求数据
     const res = await request<IClockData>({ url: 'hm/clockinInfo' })
-    //   3. 存数据
     this.totalClockinNumber = res.data.data.totalClockinNumber
     this.clockinNumbers = res.data.data.clockinNumbers
   }

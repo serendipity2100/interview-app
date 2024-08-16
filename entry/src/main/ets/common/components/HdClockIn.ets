@@ -1,4 +1,3 @@
-// 接口返回数据的类型
 import { iLoginUserModel } from '../../models/AccountModel';
 import { request } from '../utils/request';
 import { router } from '@kit.ArkUI';
@@ -14,8 +13,6 @@ export struct HdClockIn {
 
   async aboutToAppear() {
 
-    // 4. 在打卡组件中复用类型
-    // 💥 删除掉故意演示的bug
     const res = await request<IClockData>({ url: 'hm/clockinInfo' })
     this.clockCount = res.data.data.clockinNumbers
 

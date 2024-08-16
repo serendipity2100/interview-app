@@ -1,4 +1,3 @@
-// 1. cv类型
 /** 返回数据 */
 export interface IClockData {
   /** 连续签到天数 */
