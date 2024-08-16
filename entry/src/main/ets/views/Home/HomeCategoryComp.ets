@@ -49,7 +49,6 @@ export struct HomeCategoryComp {
       Tabs({ index: this.index }) {
         ForEach(this.questionTypeList, (item: IQuestionType, index: number) => {
           TabContent() {
-            // 1. 父传子给List组件, 传参id
             QuestionListComp({ typeId: item.id })
           }.tabBar(this.TabItemBuilder(item, index))
         })
