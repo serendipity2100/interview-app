@@ -10,10 +10,7 @@ export struct HomeCategoryComp {
   questionTypeList: IQuestionType[] = []
   @State index: number = 0
   @State isShow: boolean = false
-  // 1. 定义状态变量
   @State filterParams: FilterParams = new FilterParams()
-
-  // 3. 子传父修改状态变量
 
   aboutToAppear(): void {
     this.loadTypeData()
@@ -57,11 +54,13 @@ export struct HomeCategoryComp {
 
       QuestionFilterComp({
         questionTypeList: this.questionTypeList,
-        onSubmit: () => {
+        onSubmit: (params) => {
+          promptAction.showToast({ message: JSON.stringify(params, null, 2) })
+          // 1. 更新params.index到this.index
+          this.index = params.index
           this.isShow = false
         },
 
-        // 2. 父传子状态变量
         params: this.filterParams
       })
     }

@@ -4,9 +4,9 @@ import { IQuestionType } from '../../models/CategoryModel'
 
 export class FilterParams {
   // 排序：0 默认 20 浏览量↑ 21 浏览量↓
-  sort: number = 21 // 0  20  21
+  sort: number = 0 // 0  20  21
   // 阶段ID
-  index: number = 1
+  index: number = 0
 }
 
 // 需求:
@@ -50,9 +50,7 @@ export struct QuestionFilterComp {
           .fontSize(14)
           .fontColor($r('app.color.common_main_color'))
           .onClick(() => {
-            // 调用父组件中的回调函数
             this.onSubmit(this.params)
-            // this.controller.close()
           })
       }
       .width('100%')
