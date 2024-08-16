@@ -1,6 +1,5 @@
 import { request } from '../../common/utils/request';
 import { QuestionItem, QuestionItemComp } from './QuestionItemComp'
-import { promptAction } from '@kit.ArkUI';
 
 /** 试题列表响应数据类型 */
 export interface iListData {

@@ -2,35 +2,31 @@
 // 作用: 
 // 语法: 
 // 注意:
+// 1. 创建一个自定义弹窗组件
+// 2. 在要使用的组件中, 创建弹窗控制器
 
 import { HmCalendar } from '@ohmos/calendar'
 import { promptAction } from '@kit.ArkUI'
+import { HdLoading } from '../common/components/HdLoading'
 
 @Entry
 @Component
 struct Index {
+  // 2. new 创建控制器
+  xxx = new CustomDialogController({
+    // 表示如何渲染弹出层
+    builder: HdLoading(),
+    // 自定义样式
+    customStyle: true,
+    // alignment: DialogAlignment.TopStart
+  })
+
   build() {
-    Column() {
-      HmCalendar({
-        color: '#f00',
-        text: '已签到',
-        // 控制高亮的日期
-        selectedDays: [
-          { date: '2024-08-01' },
-          { date: '2024-01-10' },
-          { date: '2024-01-20' },
-        ],
-        onClickDate: (date) => {
-          promptAction.showToast({ message: date })
-        },
-        onChangeMonth: (month) => {
-          promptAction.showToast({ message: month })
-        }
+    Button('点我打开')
+      .onClick(() => {
+        // 3. 调用控制器的open方法
+        this.xxx.open()
       })
-        .borderRadius(8)
-        .border({ width: 0.5, color: '#ededed' })
-        .shadow({ color: '#ededed', radius: 16 })
-    }
 
   }
 }
