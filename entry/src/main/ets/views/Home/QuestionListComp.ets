@@ -1,5 +1,6 @@
 import { request } from '../../common/utils/request';
 import { QuestionItem, QuestionItemComp } from './QuestionItemComp'
+import { promptAction } from '@kit.ArkUI';
 
 /** 试题列表响应数据类型 */
 export interface iListData {
@@ -18,22 +19,33 @@ export interface iListData {
 export struct QuestionListComp {
   @Prop typeId: number
   @State questionList: QuestionItem[] = []
+  @State isRefreshing: boolean = false
 
   async aboutToAppear() {
+    await this.onFresh();
+
+  }
+
+  async onFresh() {
     const res = await request<iListData>({
       url: 'hm/question/list',
       params: {
         questionBankType: 10,
         type: this.typeId
       }
-    })
+    });
 
-    this.questionList = res.data.data.rows
+    this.questionList = res.data.data.rows;
 
   }
 
   build() {
-    Column() {
+    // 1. 使用Refresh包住所有的代码
+    // 2. 定义一个状态变量, 做双向
+    // 3. 监听下拉刷新事件
+    // 4. 重新发请求
+    // 5. 关闭下拉刷新的开关变量
+    Refresh({ refreshing: $$this.isRefreshing }) {
       List() {
         ForEach(this.questionList, (item: QuestionItem) => {
           ListItem() {
@@ -45,7 +57,11 @@ export struct QuestionListComp {
 
         })
       }
-
     }
+    .onRefreshing(async () => {
+      await this.onFresh()
+      this.isRefreshing = false
+    })
+
   }
 }
