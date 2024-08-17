@@ -4,7 +4,12 @@ import { FilterParams, QuestionFilterComp } from './QuestionFilterComp'
 import { QuestionListComp } from './QuestionListComp'
 import { promptAction } from '@kit.ArkUI'
 
-// 需求: 分类组件HomeCategoryCom QuestionListCom QuestionFilterCom 三者的关系
+// 需求: 分类组件  三者的关系
+// 父组件: HomeCategoryCom
+// 子组件: QuestionListCom QuestionFilterCom
+
+//  发请求的QuestionListCom组件负责通知服务器排序
+
 
 @Component
 export struct HomeCategoryComp {
@@ -55,10 +60,15 @@ export struct HomeCategoryComp {
     Column() {
       QuestionFilterComp({
         questionTypeList: this.questionTypeList,
+        // 0. ✅子传父, 传params
+
         onSubmit: (params) => {
           promptAction.showToast({ message: JSON.stringify(params, null, 2) })
           this.index = params.index
           this.isShow = false
+          // 1. 保存FilterCom传来的params
+          this.filterParams = params
+
         },
 
         params: this.filterParams
@@ -71,7 +81,12 @@ export struct HomeCategoryComp {
       Tabs({ index: this.index }) {
         ForEach(this.questionTypeList, (item: IQuestionType, index: number) => {
           TabContent() {
-            QuestionListComp({ typeId: item.id })
+
+            QuestionListComp({
+              typeId: item.id,
+              // 2. 父传子params给ListComponent
+              params: this.filterParams
+            })
           }.tabBar(this.TabItemBuilder(item, index))
         })
       }
