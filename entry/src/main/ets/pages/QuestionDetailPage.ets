@@ -21,6 +21,12 @@ export interface ParamsType {
   id: number
 }
 
+export interface IBodyParms {
+  id: string,
+  type: number,
+  optType: number
+}
+
 @Entry
 @Component
 export struct QuestionDetailPage {
@@ -118,9 +124,21 @@ export struct QuestionDetailPage {
                   Image($r('app.media.icon_point')).width(24).bindMenu([
                     {
                       value: this.question.collectFlag === 1 ? '取消收藏' : '收藏',
-                      action: () => {
-                        // 收藏和取消收藏业务逻辑代码
-                        // this.opt(1,0)
+                      action: async () => {
+                        await request<null, IBodyParms>({
+                          // 1. 判断调用哪个接口
+                          url: this.question.collectFlag === 1 ? 'hm/question/unOpt' : 'hm/question/opt',
+                          method: 'post',
+                          data: {
+                            id: this.questionId,
+                            type: 0, // App项目写死0
+                            optType: 2 // 点赞传1, 收藏传2
+                          }
+                        })
+
+
+                        await this.loadData(this.questionId)
+                        promptAction.showToast({ message: this.question.collectFlag === 1 ? '取消成功' : '收藏成功' })
                       }
                     },
                     {
