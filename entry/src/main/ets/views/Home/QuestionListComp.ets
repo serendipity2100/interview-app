@@ -1,7 +1,7 @@
 import { HdLoadingDialog } from '../../common/components/HdLoading';
 import { request } from '../../common/utils/request';
 import { QuestionItem, QuestionItemComp } from './QuestionItemComp'
-import { promptAction } from '@kit.ArkUI';
+import { promptAction, router } from '@kit.ArkUI';
 
 /** 试题列表响应数据类型 */
 export interface iListData {
@@ -44,9 +44,7 @@ export struct QuestionListComp {
   //
   // }
 
-  // 2. 改造onLoadMore函数, 支持传参boolean
   async onLoadMore(isLoadMore: boolean) {
-
 
     if (isLoadMore === true) {
       //   加载更多
@@ -89,16 +87,14 @@ export struct QuestionListComp {
         })
       }
       .onReachEnd(() => {
-        // 1. 在onReachEnd中处理加锁防止多次触发请求
         if (this.isRequesting === false) {
-          //  3. 使用同一个函数, 传参不同的值
           this.onLoadMore(true)
         }
       })
     }
     .onRefreshing(async () => {
-      //  4. 使用同一个函数, 传参不同的值
       this.onLoadMore(false)
+      router.pushUrl({ url: '/pages/ClockPage' })
     })
 
   }
