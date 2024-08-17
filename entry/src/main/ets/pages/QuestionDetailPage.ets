@@ -24,27 +24,29 @@ export interface ParamsType {
 @Entry
 @Component
 export struct QuestionDetailPage {
-  @State questionId: number = 0
+  @State questionId: string = ''
   @State
   question: QuestionDetail = {} as QuestionDetail
   @StorageProp('topHeight') topHeight: number = 0
-
-  aboutToAppear(): void {
-    this.loadData()
-  }
-
   dialog = new CustomDialogController({
     builder: HdLoadingDialog({ message: '加载中...' }),
     customStyle: true
   })
 
-  async loadData() {
-    this.dialog.open()
+  aboutToAppear(): void {
 
+    // 5. 改造创建后的查询逻辑
     const params = router.getParams() as ParamsType
-    const res = await request<QuestionDetail>({ url: 'hm/question/' + params.id })
+    this.loadData(params.id.toString())
+  }
 
-    this.questionId = params.id
+  // 3. 改造查询函数, 支持形参id
+  async loadData(id: string) {
+
+    this.dialog.open()
+    // 4. 通过形参id, 作为接口参数, 查询数据
+    const res = await request<QuestionDetail>({ url: 'hm/question/' + id })
+    this.questionId = id
     this.question = res.data.data
 
     this.dialog.close()
@@ -68,15 +70,18 @@ export struct QuestionDetailPage {
     Row() {
       Image($r("app.media.prev_black")).width((80))
         .onClick(() => {
-          // 2. 在详情界面中获取到id组成数组
           const idList = AppStorage.get('idList') as string[]
 
-          // 3. 通过路由参数上的id 查找自己的index
+
           const selfIndex = idList.findIndex((item) => {
             return item === this.questionId.toString()
           })
 
-          promptAction.showToast({ message: selfIndex.toString() })
+          // 1. 根据idList查找上一个题目的id
+          const preId = idList[selfIndex - 1]
+
+          // 2. 通过id 指定查询对应的详情数据
+          this.loadData(preId)
 
 
           // 上一题业务逻辑
