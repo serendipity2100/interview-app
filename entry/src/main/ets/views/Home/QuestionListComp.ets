@@ -94,6 +94,15 @@ export struct QuestionListComp {
             })
               .padding({ left: 10, right: 10 })
           }
+          .onClick(() => {
+            // 2.
+            router.pushUrl({
+              url: 'pages/QuestionDetailPage',
+              params: {
+                id: item.id
+              }
+            })
+          })
 
         })
       }
