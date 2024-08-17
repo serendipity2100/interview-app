@@ -31,33 +31,19 @@ export struct QuestionListComp {
   })
 
   // 需求: 优化代码- 合并下拉刷新和触底加载更多
-  // async onFresh() {
-  //   const res = await request<iListData>({
-  //     url: 'hm/question/list',
-  //     params: {
-  //       questionBankType: 10,
-  //       type: this.typeId
-  //     }
-  //   });
-  //
-  //   this.questionList = res.data.data.rows;
-  //
-  // }
-
   async onLoadMore(isLoadMore: boolean) {
 
     if (isLoadMore === true) {
       //   加载更多
-      promptAction.showToast({ message: '触底加载更多' })
+      this.isRequesting = true
+      this.page++
     } else {
-      //   下拉刷新
-      promptAction.showToast({ message: '下拉刷新' })
+      //  💥 下拉刷新重置page为1
+      this.page = 1
     }
 
-    this.isRequesting = true
-
-    this.page++
     this.dialogController.open()
+
     const res = await request<iListData>({
       url: 'hm/question/list',
       params: {
@@ -66,10 +52,22 @@ export struct QuestionListComp {
         page: this.page
       }
     });
-    this.dialogController.close()
-    this.questionList.push(...res.data.data.rows);
 
-    this.isRequesting = false
+    this.dialogController.close()
+
+    if (isLoadMore === true) {
+      // 触底加载更多
+      this.questionList.push(...res.data.data.rows);
+      this.isRequesting = false
+
+    } else {
+      // 下拉刷新
+      this.questionList = res.data.data.rows
+      // 关闭下拉刷新状态
+      this.isRefreshing = false
+    }
+
+
   }
 
   build() {
