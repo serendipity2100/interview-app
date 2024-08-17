@@ -1,24 +1,20 @@
-// 掌握: 
-import { IvSkeleton } from '../common/components/IvSkeleton'
-
-
 @Entry
 @Component
-struct Index {
+struct Login {
   build() {
     Column() {
-      Row({ space: 20 }) {
-        IvSkeleton({ widthValue: 50, heightValue: 50 })
-        Column({ space: 5 }) {
-          IvSkeleton({ widthValue: 100, heightValue: 15 })
-          IvSkeleton({ widthValue: 70, heightValue: 15 })
-        }
-        .width(200)
-        .alignItems(HorizontalAlign.Start)
-      }
-      .width('100%')
 
+      // <h1></h1>部分为替换的内容, 其它部分不变, 不需要掌握前端的语法
+      RichText(`
+      <html>
+          <body>
+          <div style="font-size:45px">
+            <h1>Hello</h1>
+          </div>
+
+          </body>
+
+      </html>`)
     }
-
   }
 }
