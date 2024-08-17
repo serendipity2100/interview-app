@@ -61,42 +61,41 @@ export struct QuestionDetailPage {
       .margin({ right: 5 })
   }
 
+  onToggle(xxx: 'pre' | 'next') {
+    const idList = AppStorage.get('idList') as string[]
+    const selfIndex = idList.findIndex((item) => {
+      return item === this.questionId.toString()
+    })
+
+    // 1. 先处理所有的异常
+    if (xxx === 'pre' && selfIndex === 0) {
+      promptAction.showToast({ message: '没有上一题了' })
+      return
+    }
+
+    if (xxx === 'next' && selfIndex === idList.length - 1) {
+      promptAction.showToast({ message: '没有下一题了' })
+      return
+    }
+
+    // 2. 再处理正常的业务逻辑
+    let id = xxx === 'pre' ? idList[selfIndex - 1] : idList[selfIndex + 1]
+    this.loadData(id)
+
+  }
+
   // 上一题，下一题
   @Builder
   toggleBuilder() {
     Row() {
       Image($r("app.media.prev_black")).width((80))
         .onClick(() => {
-          const idList = AppStorage.get('idList') as string[]
-          const selfIndex = idList.findIndex((item) => {
-            return item === this.questionId.toString()
-          })
-
-          if (selfIndex === 0) {
-            promptAction.showToast({ message: '没有上一题了' })
-            return
-          }
-          const preId = idList[selfIndex - 1]
-
-          this.loadData(preId)
-
-
+          this.onToggle('pre')
         })
-      Image($r("app.media.next_black")).width((80)).onClick(() => {
-
-        const idList = AppStorage.get('idList') as string[]
-        const selfIndex = idList.findIndex((item) => {
-          return item === this.questionId.toString()
+      Image($r("app.media.next_black")).width((80))
+        .onClick(() => {
+          this.onToggle('next')
         })
-
-        if (selfIndex === idList.length - 1) {
-          promptAction.showToast({ message: '没有下一题了' })
-          return
-        }
-
-        const nextId = idList[selfIndex + 1]
-        this.loadData(nextId)
-      })
     }.width('100%').justifyContent(FlexAlign.SpaceAround)
   }
 
