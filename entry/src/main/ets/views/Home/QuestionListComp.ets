@@ -77,6 +77,9 @@ export struct QuestionListComp {
       this.isRefreshing = false
     }
 
+    const idList = this.questionList.map(item => item.id)
+    // 1. List组件中获取到试题列表, 通过AppStorage把所有的id存到数组中  // [1, 2, 5, 68,22, 0]
+    AppStorage.setOrCreate('idList', idList)
 
   }
 

@@ -43,6 +43,8 @@ export struct QuestionDetailPage {
 
     const params = router.getParams() as ParamsType
     const res = await request<QuestionDetail>({ url: 'hm/question/' + params.id })
+
+    this.questionId = params.id
     this.question = res.data.data
 
     this.dialog.close()
@@ -64,9 +66,21 @@ export struct QuestionDetailPage {
   @Builder
   toggleBuilder() {
     Row() {
-      Image($r("app.media.prev_black")).width((80)).onClick(() => {
-        // 上一题业务逻辑
-      })
+      Image($r("app.media.prev_black")).width((80))
+        .onClick(() => {
+          // 2. 在详情界面中获取到id组成数组
+          const idList = AppStorage.get('idList') as string[]
+
+          // 3. 通过路由参数上的id 查找自己的index
+          const selfIndex = idList.findIndex((item) => {
+            return item === this.questionId.toString()
+          })
+
+          promptAction.showToast({ message: selfIndex.toString() })
+
+
+          // 上一题业务逻辑
+        })
       Image($r("app.media.next_black")).width((80)).onClick(() => {
         // 下一题业务逻辑
       })
