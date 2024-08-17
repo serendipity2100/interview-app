@@ -1,7 +1,7 @@
 import { HdLoadingDialog } from '../../common/components/HdLoading';
 import { request } from '../../common/utils/request';
-import { QuestionItem, QuestionItemComp } from './QuestionItemComp'
-import { promptAction, router } from '@kit.ArkUI';
+import { QuestionItem, QuestionItemComp } from './QuestionItemComp';
+import { router } from '@kit.ArkUI';
 import { FilterParams } from './QuestionFilterComp';
 
 /** 试题列表响应数据类型 */
@@ -30,26 +30,20 @@ export struct QuestionListComp {
     }),
     customStyle: true
   })
-  // 3. ListComponent接收params
-  // 4. 监听params的数据变化
   @Prop
   @Watch('onSort')
   params: FilterParams
 
   onSort() {
-    // 5. 发请求, 传参sort查排序数据
     this.onLoadMore(false)
   }
 
-  // 需求: 优化代码- 合并下拉刷新和触底加载更多
   async onLoadMore(isLoadMore: boolean) {
 
     if (isLoadMore === true) {
-      //   加载更多
       this.isRequesting = true
       this.page++
     } else {
-      //  💥 下拉刷新重置page为1
       this.page = 1
     }
 
