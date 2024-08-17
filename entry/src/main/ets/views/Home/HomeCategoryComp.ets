@@ -24,7 +24,7 @@ export struct HomeCategoryComp {
     this.questionTypeList = res.data.data
     setTimeout(() => {
       this.isLoading = false
-    }, 2000)
+    }, 1000)
   }
 
   @Builder
@@ -93,7 +93,6 @@ export struct HomeCategoryComp {
               QuestionListComp({
                 typeId: item.id,
                 params: this.filterParams,
-                // 1. 给每个List组件分配一个自己的索引值
                 selfIndex: index
 
               })

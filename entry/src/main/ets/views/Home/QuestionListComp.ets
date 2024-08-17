@@ -43,9 +43,6 @@ export struct QuestionListComp {
     if (this.selfIndex !== this.params.index) {
       return
     }
-    console.log('selfIndex -----> ', this.selfIndex)
-    console.log('params.index -----> ', this.params.index)
-
 
     if (isLoadMore === true) {
       this.isRequesting = true
@@ -95,7 +92,6 @@ export struct QuestionListComp {
               .padding({ left: 10, right: 10 })
           }
           .onClick(() => {
-            // 2.
             router.pushUrl({
               url: 'pages/QuestionDetailPage',
               params: {
@@ -114,7 +110,6 @@ export struct QuestionListComp {
     }
     .onRefreshing(async () => {
       this.onLoadMore(false)
-      router.pushUrl({ url: '/pages/ClockPage' })
     })
 
   }

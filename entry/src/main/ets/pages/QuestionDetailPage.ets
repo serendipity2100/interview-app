@@ -33,20 +33,16 @@ export struct QuestionDetailPage {
     this.loadData()
   }
 
-  // 3. 定义自定义弹出层
   dialog = new CustomDialogController({
     builder: HdLoadingDialog({ message: '加载中...' }),
     customStyle: true
   })
 
   async loadData() {
-    // 4. 开启加载提示
     this.dialog.open()
 
     const params = router.getParams() as ParamsType
-    // 1. 发请求
     const res = await request<QuestionDetail>({ url: 'hm/question/' + params.id })
-    // 2. 保存数据
     this.question = res.data.data
 
     this.dialog.close()
