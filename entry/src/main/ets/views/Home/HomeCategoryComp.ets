@@ -12,12 +12,7 @@ export struct HomeCategoryComp {
   @State index: number = 0
   @State isShow: boolean = false
   @State filterParams: FilterParams = new FilterParams()
-  // 1. 定义状态变量
   @State isLoading: boolean = false
-
-  // 2. 请求前设置为true
-  // 3. 请求结束后, 设置为false
-  // 4. 条件渲染
 
   aboutToAppear(): void {
     this.loadTypeData()
