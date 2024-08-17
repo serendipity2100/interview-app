@@ -72,7 +72,6 @@ export struct QuestionDetailPage {
             return item === this.questionId.toString()
           })
 
-          // 1. 判断是否为第一道题, 如果是, 阻止后续代码执行
           if (selfIndex === 0) {
             promptAction.showToast({ message: '没有上一题了' })
             return
@@ -90,13 +89,11 @@ export struct QuestionDetailPage {
           return item === this.questionId.toString()
         })
 
-        // 2. 判断是否为最后一道题, 如果是, 阻止后续代码执行
         if (selfIndex === idList.length - 1) {
           promptAction.showToast({ message: '没有下一题了' })
           return
         }
 
-        // 3. index + 1 找id查数据
         const nextId = idList[selfIndex + 1]
         this.loadData(nextId)
       })
