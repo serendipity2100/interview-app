@@ -3,6 +3,7 @@ import { IQuestionType } from '../../models/CategoryModel'
 import { FilterParams, QuestionFilterComp } from './QuestionFilterComp'
 import { QuestionListComp } from './QuestionListComp'
 import { promptAction } from '@kit.ArkUI'
+import { IvSkeleton } from '../../common/components/IvSkeleton'
 
 @Component
 export struct HomeCategoryComp {
@@ -11,14 +12,24 @@ export struct HomeCategoryComp {
   @State index: number = 0
   @State isShow: boolean = false
   @State filterParams: FilterParams = new FilterParams()
+  // 1. 定义状态变量
+  @State isLoading: boolean = false
+
+  // 2. 请求前设置为true
+  // 3. 请求结束后, 设置为false
+  // 4. 条件渲染
 
   aboutToAppear(): void {
     this.loadTypeData()
   }
 
   async loadTypeData() {
+    this.isLoading = true
     const res = await request<IQuestionType[]>({ url: 'hm/question/type' })
     this.questionTypeList = res.data.data
+    setTimeout(() => {
+      this.isLoading = false
+    }, 2000)
   }
 
   @Builder
@@ -68,52 +79,65 @@ export struct HomeCategoryComp {
   }
 
   build() {
-    Stack({ alignContent: Alignment.TopEnd }) {
-      Tabs({ index: this.index }) {
-        ForEach(this.questionTypeList, (item: IQuestionType, index: number) => {
-          TabContent() {
 
-            QuestionListComp({
-              typeId: item.id,
-              params: this.filterParams,
-              // 1. 给每个List组件分配一个自己的索引值
-              selfIndex: index
-              
+    if (this.isLoading) {
+      ForEach(Array.from({ length: 9 }), () => {
+        Row({ space: 10 }) {
+          IvSkeleton({ widthValue: 100, heightValue: 25 })
+          IvSkeleton({ widthValue: 100, heightValue: 25 })
+          IvSkeleton({ widthValue: 100, heightValue: 25 })
+        }
+        .margin({ top: 10, bottom: 20 })
+      })
+    } else {
+      Stack({ alignContent: Alignment.TopEnd }) {
+        Tabs({ index: this.index }) {
+          ForEach(this.questionTypeList, (item: IQuestionType, index: number) => {
+            TabContent() {
+
+              QuestionListComp({
+                typeId: item.id,
+                params: this.filterParams,
+                // 1. 给每个List组件分配一个自己的索引值
+                selfIndex: index
+
+              })
+            }.tabBar(this.TabItemBuilder(item, index))
+          })
+        }
+        .height(450)
+        .divider({
+          strokeWidth: $r('app.float.common_border_width'),
+          color: $r('app.color.common_gray_border')
+        })
+        .barMode(BarMode.Scrollable)
+        .barHeight(44)
+        .onChange((index) => {
+          promptAction.showToast({ message: '你点的索引是' + index })
+          this.index = index
+          this.filterParams.index = index
+        })
+
+        Row() {
+          // 过滤条件按钮
+          Image($r('app.media.ic_home_filter'))
+            .width(22)
+            .height(44)
+            .objectFit(ImageFit.Contain)
+            .onClick(() => {
+              this.isShow = true
             })
-          }.tabBar(this.TabItemBuilder(item, index))
+        }
+        .width(54)
+        .height(44)
+        .justifyContent(FlexAlign.Center)
+        .backgroundColor(Color.White)
+        .bindSheet($$this.isShow, this.renderFilter(), {
+          height: 400,
+          showClose: false
         })
       }
-      .height(450)
-      .divider({
-        strokeWidth: $r('app.float.common_border_width'),
-        color: $r('app.color.common_gray_border')
-      })
-      .barMode(BarMode.Scrollable)
-      .barHeight(44)
-      .onChange((index) => {
-        promptAction.showToast({ message: '你点的索引是' + index })
-        this.index = index
-        this.filterParams.index = index
-      })
-
-      Row() {
-        // 过滤条件按钮
-        Image($r('app.media.ic_home_filter'))
-          .width(22)
-          .height(44)
-          .objectFit(ImageFit.Contain)
-          .onClick(() => {
-            this.isShow = true
-          })
-      }
-      .width(54)
-      .height(44)
-      .justifyContent(FlexAlign.Center)
-      .backgroundColor(Color.White)
-      .bindSheet($$this.isShow, this.renderFilter(), {
-        height: 400,
-        showClose: false
-      })
     }
+
   }
 }
