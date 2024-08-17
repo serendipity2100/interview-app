@@ -30,12 +30,8 @@ export struct QuestionListComp {
     }),
     customStyle: true
   })
-  @Prop
-  @Watch('onSort')
-  params: FilterParams
-  // 2. List组件接收自己的index
-  @Prop
-  selfIndex: number
+  @Prop @Watch('onSort') params: FilterParams
+  @Prop selfIndex: number
 
   onSort() {
 
@@ -44,11 +40,9 @@ export struct QuestionListComp {
 
   async onLoadMore(isLoadMore: boolean) {
 
-    // 3. 跟watch监听的params.index做比较
     if (this.selfIndex !== this.params.index) {
       return
     }
-    // 4. 只有自己的selfIndex和params.index相等时才发请求
     console.log('selfIndex -----> ', this.selfIndex)
     console.log('params.index -----> ', this.params.index)
 
