@@ -75,7 +75,10 @@ export struct HomeCategoryComp {
 
             QuestionListComp({
               typeId: item.id,
-              params: this.filterParams
+              params: this.filterParams,
+              // 1. 给每个List组件分配一个自己的索引值
+              selfIndex: index
+              
             })
           }.tabBar(this.TabItemBuilder(item, index))
         })

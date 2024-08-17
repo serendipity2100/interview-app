@@ -33,12 +33,25 @@ export struct QuestionListComp {
   @Prop
   @Watch('onSort')
   params: FilterParams
+  // 2. List组件接收自己的index
+  @Prop
+  selfIndex: number
 
   onSort() {
+
     this.onLoadMore(false)
   }
 
   async onLoadMore(isLoadMore: boolean) {
+
+    // 3. 跟watch监听的params.index做比较
+    if (this.selfIndex !== this.params.index) {
+      return
+    }
+    // 4. 只有自己的selfIndex和params.index相等时才发请求
+    console.log('selfIndex -----> ', this.selfIndex)
+    console.log('params.index -----> ', this.params.index)
+
 
     if (isLoadMore === true) {
       this.isRequesting = true
@@ -55,7 +68,6 @@ export struct QuestionListComp {
         questionBankType: 10,
         type: this.typeId,
         page: this.page,
-        // 6. 传参sort
         sort: this.params.sort // 0
       }
     });
