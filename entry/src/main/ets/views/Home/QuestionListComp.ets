@@ -1,6 +1,7 @@
 import { HdLoadingDialog } from '../../common/components/HdLoading';
 import { request } from '../../common/utils/request';
 import { QuestionItem, QuestionItemComp } from './QuestionItemComp'
+import { promptAction } from '@kit.ArkUI';
 
 /** 试题列表响应数据类型 */
 export interface iListData {
@@ -29,22 +30,30 @@ export struct QuestionListComp {
     customStyle: true
   })
 
-  async onFresh() {
-    const res = await request<iListData>({
-      url: 'hm/question/list',
-      params: {
-        questionBankType: 10,
-        type: this.typeId
-      }
-    });
+  // 需求: 优化代码- 合并下拉刷新和触底加载更多
+  // async onFresh() {
+  //   const res = await request<iListData>({
+  //     url: 'hm/question/list',
+  //     params: {
+  //       questionBankType: 10,
+  //       type: this.typeId
+  //     }
+  //   });
+  //
+  //   this.questionList = res.data.data.rows;
+  //
+  // }
 
-    this.questionList = res.data.data.rows;
+  // 2. 改造onLoadMore函数, 支持传参boolean
+  async onLoadMore(isLoadMore: boolean) {
 
-  }
 
-  async onLoadMore() {
-    if (this.isRequesting === true) {
-      return
+    if (isLoadMore === true) {
+      //   加载更多
+      promptAction.showToast({ message: '触底加载更多' })
+    } else {
+      //   下拉刷新
+      promptAction.showToast({ message: '下拉刷新' })
     }
 
     this.isRequesting = true
@@ -80,12 +89,16 @@ export struct QuestionListComp {
         })
       }
       .onReachEnd(() => {
-        this.onLoadMore()
+        // 1. 在onReachEnd中处理加锁防止多次触发请求
+        if (this.isRequesting === false) {
+          //  3. 使用同一个函数, 传参不同的值
+          this.onLoadMore(true)
+        }
       })
     }
     .onRefreshing(async () => {
-      await this.onFresh()
-      this.isRefreshing = false
+      //  4. 使用同一个函数, 传参不同的值
+      this.onLoadMore(false)
     })
 
   }
