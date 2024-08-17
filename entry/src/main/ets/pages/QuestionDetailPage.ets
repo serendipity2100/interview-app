@@ -1,5 +1,7 @@
 import { HdTag } from '../common/components/HdTag'
 import { promptAction, router } from '@kit.ArkUI'
+import { request } from '../common/utils/request'
+import { HdLoadingDialog } from '../common/components/HdLoading'
 
 export interface QuestionDetail {
   id: string
@@ -22,31 +24,32 @@ export interface ParamsType {
 @Entry
 @Component
 export struct QuestionDetailPage {
+  @State questionId: number = 0
   @State
-  questionId: number = 0
-  @State
-  question: QuestionDetail = {
-    id: '1',
-    stem: 'Vue生命周期',
-    difficulty: 4,
-    likeCount: 100,
-    views: 122,
-    readFlag: 1,
-    answer: `<strong>Vue生命周期分为四个阶段，10个周期函数</strong>`,
-    collectFlag: 1,
-    likeFlag: 1,
-    stage: ['Vue', '前端']
-  } as QuestionDetail
+  question: QuestionDetail = {} as QuestionDetail
   @StorageProp('topHeight') topHeight: number = 0
 
   aboutToAppear(): void {
     this.loadData()
   }
 
+  // 3. 定义自定义弹出层
+  dialog = new CustomDialogController({
+    builder: HdLoadingDialog({ message: '加载中...' }),
+    customStyle: true
+  })
+
   async loadData() {
-    //   3.
+    // 4. 开启加载提示
+    this.dialog.open()
+
     const params = router.getParams() as ParamsType
-    promptAction.showToast({ message: params.id.toString() })
+    // 1. 发请求
+    const res = await request<QuestionDetail>({ url: 'hm/question/' + params.id })
+    // 2. 保存数据
+    this.question = res.data.data
+
+    this.dialog.close()
   }
 
   // 题目所属标签
