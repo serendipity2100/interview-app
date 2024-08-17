@@ -35,16 +35,13 @@ export struct QuestionDetailPage {
 
   aboutToAppear(): void {
 
-    // 5. 改造创建后的查询逻辑
     const params = router.getParams() as ParamsType
     this.loadData(params.id.toString())
   }
 
-  // 3. 改造查询函数, 支持形参id
   async loadData(id: string) {
 
     this.dialog.open()
-    // 4. 通过形参id, 作为接口参数, 查询数据
     const res = await request<QuestionDetail>({ url: 'hm/question/' + id })
     this.questionId = id
     this.question = res.data.data
@@ -71,16 +68,11 @@ export struct QuestionDetailPage {
       Image($r("app.media.prev_black")).width((80))
         .onClick(() => {
           const idList = AppStorage.get('idList') as string[]
-
-
           const selfIndex = idList.findIndex((item) => {
             return item === this.questionId.toString()
           })
-
-          // 1. 根据idList查找上一个题目的id
           const preId = idList[selfIndex - 1]
 
-          // 2. 通过id 指定查询对应的详情数据
           this.loadData(preId)
 
 
