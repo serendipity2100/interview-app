@@ -71,15 +71,34 @@ export struct QuestionDetailPage {
           const selfIndex = idList.findIndex((item) => {
             return item === this.questionId.toString()
           })
+
+          // 1. 判断是否为第一道题, 如果是, 阻止后续代码执行
+          if (selfIndex === 0) {
+            promptAction.showToast({ message: '没有上一题了' })
+            return
+          }
           const preId = idList[selfIndex - 1]
 
           this.loadData(preId)
 
 
-          // 上一题业务逻辑
         })
       Image($r("app.media.next_black")).width((80)).onClick(() => {
-        // 下一题业务逻辑
+
+        const idList = AppStorage.get('idList') as string[]
+        const selfIndex = idList.findIndex((item) => {
+          return item === this.questionId.toString()
+        })
+
+        // 2. 判断是否为最后一道题, 如果是, 阻止后续代码执行
+        if (selfIndex === idList.length - 1) {
+          promptAction.showToast({ message: '没有下一题了' })
+          return
+        }
+
+        // 3. index + 1 找id查数据
+        const nextId = idList[selfIndex + 1]
+        this.loadData(nextId)
       })
     }.width('100%').justifyContent(FlexAlign.SpaceAround)
   }
