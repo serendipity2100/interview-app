@@ -8,6 +8,8 @@ interface iRouterParams {
   keywordText: string
 }
 
+// 需求: 实现点击搜索
+// 需求: 优化一个小问题
 @Entry
 @Component
 struct SearchPage {
@@ -44,9 +46,7 @@ struct SearchPage {
     this.list.unshift(this.keyword)
     this.historyFile.putSync('list', this.list)
     this.historyFile.flush()
-    // if (!isFirst) {
-    //   this.keyword = ''
-    // }
+
 
     this.isInput = false
   }
@@ -111,6 +111,12 @@ struct SearchPage {
   itemBuilder(text: string) {
     Row({ space: 20 }) {
       Text(text)
+        .onClick(() => {
+          //   点击事件
+          this.keyword = text
+          // 1. 更新keyword, 执行onSubmit
+          this.onSubmit()
+        })
       if (this.isDel) {
         Text('x')
           .height(30)

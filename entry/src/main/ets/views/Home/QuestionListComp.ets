@@ -80,7 +80,6 @@ export struct QuestionListComp {
     }
 
     const idList = this.questionList.map(item => item.id)
-    // 1. List组件中获取到试题列表, 通过AppStorage把所有的id存到数组中  // [1, 2, 5, 68,22, 0]
     AppStorage.setOrCreate('idList', idList)
 
   }
@@ -108,6 +107,13 @@ export struct QuestionListComp {
         })
       }
       .onReachEnd(() => {
+
+        // 2.
+        if (this.questionList.length > 0 && this.questionList.length < 10) {
+          return
+        }
+
+        console.log('触底了 -----> ',)
         if (this.isRequesting === false) {
           this.onLoadMore(true)
         }
