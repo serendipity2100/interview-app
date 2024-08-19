@@ -19,7 +19,6 @@ export interface iListData {
 
 @Component
 export struct QuestionListComp {
-  @Prop typeId: number
   @State questionList: QuestionItem[] = []
   @State isRefreshing: boolean = false
   page = 0
@@ -30,13 +29,11 @@ export struct QuestionListComp {
     }),
     customStyle: true
   })
-  @Prop @Watch('onSort') params: FilterParams
-  @Prop selfIndex: number
-  // 2. 添加属性,
+  // 1. 设置初始值, 优化外部父组件, 不需要传值
+  @Prop typeId: number = 0
+  @Prop selfIndex: number = 0
+  @Prop @Watch('onSort') params: FilterParams = new FilterParams()
   keyword = ''
-
-
-  // 4. 父组件传同名参数覆盖keyword
 
   onSort() {
     this.onLoadMore(false)
@@ -64,7 +61,6 @@ export struct QuestionListComp {
         type: this.typeId,
         page: this.page,
         sort: this.params.sort, // 0
-        // 3. 给接口传参
         keyword: this.keyword
       }
     });

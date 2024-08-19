@@ -14,42 +14,49 @@ struct SearchPage {
   @StorageProp('topHeight')
   topHeight: number = 0
   @State isInput: boolean = false
+  @State list: string[] = []
 
   aboutToAppear(): void {
     let params = router.getParams() as iRouterParams
     this.keyword = params.keywordText
 
     this.list = this.historyFile.getSync('list', []) as string[]
+    this.onSubmit()
+
   }
 
-  @State list: string[] = []
   @State keyword: string = ''
   @State isDel: boolean = false
   historyFile = preferences.getPreferencesSync(getContext(this), { name: 'history' })
+
+  onSubmit() {
+    if (this.keyword.trim() === '') {
+      promptAction.showToast({ message: '请先输入搜索的内容' })
+      return
+    }
+
+    const oldIndex = this.list.findIndex(item => item === this.keyword)
+
+    if (oldIndex !== -1) {
+      this.list.splice(oldIndex, 1)
+    }
+
+    this.list.unshift(this.keyword)
+    this.historyFile.putSync('list', this.list)
+    this.historyFile.flush()
+    // if (!isFirst) {
+    //   this.keyword = ''
+    // }
+
+    this.isInput = false
+  }
 
   build() {
     Navigation() {
       Column({ space: 15 }) {
         TextInput({ placeholder: '输入回车保存数据', text: $$this.keyword })
           .onSubmit(() => {
-            if (this.keyword.trim() === '') {
-              promptAction.showToast({ message: '请先输入搜索的内容' })
-              return
-            }
-
-            const oldIndex = this.list.findIndex(item => item === this.keyword)
-
-            if (oldIndex !== -1) {
-              this.list.splice(oldIndex, 1)
-            }
-
-            this.list.unshift(this.keyword)
-            this.historyFile.putSync('list', this.list)
-            this.historyFile.flush()
-            this.keyword = ''
-
-            this.isInput = false
-
+            this.onSubmit()
           })
           .onClick(() => this.isInput = true)
 
@@ -87,11 +94,6 @@ struct SearchPage {
           }
         } else {
           QuestionListComp({
-            //1. 传参数typeId: 0, selfIndex: 0, params : newFilterParams
-            typeId: 0,
-            selfIndex: 0,
-            params: new FilterParams(),
-            // 4.
             keyword: this.keyword
           })
         }
