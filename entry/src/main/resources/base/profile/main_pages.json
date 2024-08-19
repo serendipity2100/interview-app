@@ -5,6 +5,7 @@
     "pages/PreviewWebPage",
     "pages/TestPage",
     "pages/ClockPage",
-    "pages/QuestionDetailPage"
+    "pages/QuestionDetailPage",
+    "pages/SearchPage"
   ]
 }

@@ -25,7 +25,9 @@ export struct HdSearch {
       .borderRadius($r('app.float.hd_search_radius'))
       .justifyContent(FlexAlign.Center)
     }.onClick(() => {
-      router.pushUrl({ url: 'pages/SearchPage' })
+      router.pushUrl({
+        url: 'pages/SearchPage', params: { keywordText: 'xxx' }
+      })
     })
   }
 }
