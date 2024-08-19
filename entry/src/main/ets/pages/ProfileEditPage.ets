@@ -1,5 +1,5 @@
 import { iLoginUserModel } from '../models/AccountModel'
-import { picker } from '@kit.CoreFileKit'
+import { fileIo, picker } from '@kit.CoreFileKit'
 
 
 @Entry
@@ -24,18 +24,28 @@ struct ProfileEditPage {
                 .borderRadius((40))
                 .border({ width: 0.5, color: '#e4e4e4' })
                 .onClick(async () => {
-                  // 1. 打开相册  选择图片(url路径)
+                  // 1. ✅打开相册  选择图片(url路径)
                   const xxxPicker = new picker.PhotoViewPicker()
                   const res = await xxxPicker.select({
                     MIMEType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
                     maxSelectNumber: 1
                   })
 
-                  if (res.photoUris.length > 0) {
-                    const filePath = res.photoUris[0]
-                    AlertDialog.show({ message: filePath, alignment: DialogAlignment.Center })
+                  // 0. 使用return防止if 嵌套
+                  if (res.photoUris.length === 0) {
+                    return
                   }
+
+                  const context = getContext(this)
+                  const cacheDir = context.cacheDir
+
                   // 2. 拷贝图片到缓存目录
+                  const oldPath = res.photoUris[0]
+                  // 2.1 以只读模式打开文件, 获取文件对象
+                  const oldFile = fileIo.openSync(oldPath, fileIo.OpenMode.READ_ONLY)
+                  // 2.2 copeFileSync方法复制图片到缓存目录
+                  fileIo.copyFileSync(oldFile.fd, cacheDir + '/' + 'xxx.jpg')
+
                   // 3. request.uploadFile
 
                 })
