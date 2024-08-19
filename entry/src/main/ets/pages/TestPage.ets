@@ -24,6 +24,12 @@ struct PreDemo {
             return
           }
           // 4. 提交事件中-非重复控制-TODO
+          const oldIndex = this.list.findIndex(item => item === this.keyword)
+
+          if (oldIndex !== -1) {
+            this.list.splice(oldIndex, 1)
+          }
+
           this.list.unshift(this.keyword)
           this.historyFile.putSync('list', this.list)
           this.historyFile.flush()
