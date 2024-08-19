@@ -1,11 +1,8 @@
-import { promptAction } from '@kit.ArkUI'
-
 @Entry
 @Component
 struct PreDemo {
   @State keyword: string = ''
   @StorageProp('topHeight') topHeight: number = 0
-  // 1. 定义状态变量 isDel: boolean
   @State isDel: boolean = false
 
   aboutToAppear(): void {
@@ -23,8 +20,7 @@ struct PreDemo {
         Text('搜索记录').fontSize(20).fontWeight(800)
 
         Row() {
-          // 2. 条件渲染 if 判断显示与否
-          // 3. 点击事件中切换isDel的值
+
           if (this.isDel) {
             Text('全部删除')
             Text(' | ')
