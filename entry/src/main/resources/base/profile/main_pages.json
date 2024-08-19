@@ -6,6 +6,7 @@
     "pages/TestPage",
     "pages/ClockPage",
     "pages/QuestionDetailPage",
-    "pages/SearchPage"
+    "pages/SearchPage",
+    "pages/ProfileEditPage"
   ]
 }

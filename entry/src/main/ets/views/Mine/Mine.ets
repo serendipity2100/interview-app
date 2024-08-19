@@ -57,7 +57,8 @@ export struct Mine {
               .fillColor($r('app.color.ih_gray_color'))
           }.onClick(() => {
             router.pushUrl({
-              url: '修改信息页面'
+              // 2,.
+              url: 'pages/ProfileEditPage'
             })
           })
           .width('100%')
