@@ -23,7 +23,7 @@ struct PreDemo {
             promptAction.showToast({ message: '请先输入搜索的内容' })
             return
           }
-          // 4. 提交事件中-非重复控制-TODO
+
           const oldIndex = this.list.findIndex(item => item === this.keyword)
 
           if (oldIndex !== -1) {
@@ -43,6 +43,11 @@ struct PreDemo {
 
           if (this.isDel) {
             Text('全部删除')
+              .onClick(() => {
+                this.list = []
+                this.historyFile.putSync('list', [])
+                this.historyFile.flush()
+              })
             Text(' | ')
             Text('取消删除')
               .onClick(() => this.isDel = false)
@@ -74,7 +79,10 @@ struct PreDemo {
         Text('x')
           .height(30)
           .onClick(() => {
-            AlertDialog.show({ message: '删除' + text })
+            const index = this.list.findIndex(v => v === text)
+            this.list.splice(index, 1)
+            this.historyFile.putSync('list', this.list)
+            this.historyFile.flush()
           })
       }
 
