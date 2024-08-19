@@ -1,5 +1,7 @@
 import { iLoginUserModel } from '../models/AccountModel'
 import { fileIo, picker } from '@kit.CoreFileKit'
+import { request } from '@kit.BasicServicesKit'
+import { http } from '@kit.NetworkKit'
 
 
 @Entry
@@ -39,14 +41,37 @@ struct ProfileEditPage {
                   const context = getContext(this)
                   const cacheDir = context.cacheDir
 
-                  // 2. 拷贝图片到缓存目录
+                  // ✅ 2. 拷贝图片到缓存目录
                   const oldPath = res.photoUris[0]
-                  // 2.1 以只读模式打开文件, 获取文件对象
                   const oldFile = fileIo.openSync(oldPath, fileIo.OpenMode.READ_ONLY)
-                  // 2.2 copeFileSync方法复制图片到缓存目录
-                  fileIo.copyFileSync(oldFile.fd, cacheDir + '/' + 'xxx.jpg')
+
+                  const fileName = Date.now()
+                  fileIo.copyFileSync(oldFile.fd, cacheDir + '/' + `${fileName}.jpg`)
 
                   // 3. request.uploadFile
+                  const task = await request.uploadFile(context, {
+                    url: 'https://api-harmony-teach.itheima.net/hm/userInfo/avatar',
+                    header: {
+                      'content-type': 'multipart/form-data',
+                      Authorization: `Bearer ${this.currentUser.token}`
+                    },
+                    method: http.RequestMethod.POST,
+                    files: [{
+                      filename: `${fileName}.jpg`,
+                      uri: `internal://cache/${fileName}.jpg`,
+                      name: 'file',
+                      type: 'jpg'
+                    }],
+                    data: []
+                  })
+
+                  task.on('complete', () => {
+                    AlertDialog.show({ message: '上传成功', alignment: DialogAlignment.Center })
+                  })
+
+                  task.on('fail', (err) => {
+                    AlertDialog.show({ message: JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
+                  })
 
                 })
             }.width('100%').height((60)).justifyContent(FlexAlign.SpaceBetween)
