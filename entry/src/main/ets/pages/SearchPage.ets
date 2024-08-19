@@ -1,6 +1,8 @@
 import { router } from '@kit.ArkUI';
 import { preferences } from '@kit.ArkData'
 import { promptAction } from '@kit.ArkUI'
+import { QuestionListComp } from '../views/Home/QuestionListComp';
+import { FilterParams } from '../views/Home/QuestionFilterComp';
 
 interface iRouterParams {
   keywordText: string
@@ -84,7 +86,14 @@ struct SearchPage {
             })
           }
         } else {
-          Text('搜索结果列表')
+          QuestionListComp({
+            //1. 传参数typeId: 0, selfIndex: 0, params : newFilterParams
+            typeId: 0,
+            selfIndex: 0,
+            params: new FilterParams(),
+            // 4.
+            keyword: this.keyword
+          })
         }
 
       }

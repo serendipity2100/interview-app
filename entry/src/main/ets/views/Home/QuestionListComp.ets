@@ -32,9 +32,13 @@ export struct QuestionListComp {
   })
   @Prop @Watch('onSort') params: FilterParams
   @Prop selfIndex: number
+  // 2. 添加属性,
+  keyword = ''
+
+
+  // 4. 父组件传同名参数覆盖keyword
 
   onSort() {
-
     this.onLoadMore(false)
   }
 
@@ -59,7 +63,9 @@ export struct QuestionListComp {
         questionBankType: 10,
         type: this.typeId,
         page: this.page,
-        sort: this.params.sort // 0
+        sort: this.params.sort, // 0
+        // 3. 给接口传参
+        keyword: this.keyword
       }
     });
 
