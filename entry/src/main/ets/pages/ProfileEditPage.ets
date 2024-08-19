@@ -1,4 +1,3 @@
-import { promptAction } from '@kit.ArkUI'
 import { iLoginUserModel } from '../models/AccountModel'
 import { picker } from '@kit.CoreFileKit'
 

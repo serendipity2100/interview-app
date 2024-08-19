@@ -18,11 +18,9 @@ interface Tool {
 
 @Component
 export struct Mine {
-  // 1. 获取用户信息
   @StorageProp('user')
   currentUser: iLoginUserModel = {} as iLoginUserModel
 
-  // 3. 设置状态栏文字颜色
   aboutToAppear(): void {
     WindowManager.setStatusBarLight()
   }
@@ -34,13 +32,11 @@ export struct Mine {
   build() {
     Column({ space: 16 }) {
       Row({ space: 12 }) {
-        // 2.
         Image(this.currentUser.avatar)
           .width(55)
           .aspectRatio(1)
           .borderRadius(55)
         Column({ space: 4 }) {
-          // 3.
           Text(this.currentUser.nickName)
             .fontSize(18)
             .fontWeight(600)
@@ -57,7 +53,6 @@ export struct Mine {
               .fillColor($r('app.color.ih_gray_color'))
           }.onClick(() => {
             router.pushUrl({
-              // 2,.
               url: 'pages/ProfileEditPage'
             })
           })
