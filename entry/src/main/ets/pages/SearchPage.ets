@@ -11,6 +11,10 @@ interface iRouterParams {
 struct SearchPage {
   @StorageProp('topHeight')
   topHeight: number = 0
+  // 1. 定义状态变量 isInput  为true显示搜索记录页面, 为false显示搜索结果列表
+  @State isInput: boolean = false
+
+  // 3. 点击事件和回车事件中 修改isInput
 
   aboutToAppear(): void {
     let params = router.getParams() as iRouterParams
@@ -44,39 +48,49 @@ struct SearchPage {
             this.historyFile.putSync('list', this.list)
             this.historyFile.flush()
             this.keyword = ''
+
+            this.isInput = false
+
           })
+          .onClick(() => this.isInput = true)
 
-        Row() {
-          Text('搜索记录').fontSize(20).fontWeight(800)
-
+        // 2. 条件渲染
+        if (this.isInput) {
           Row() {
+            Text('搜索记录').fontSize(20).fontWeight(800)
 
-            if (this.isDel) {
-              Text('全部删除')
-                .onClick(() => {
-                  this.list = []
-                  this.historyFile.putSync('list', [])
-                  this.historyFile.flush()
-                })
-              Text(' | ')
-              Text('取消删除')
-                .onClick(() => this.isDel = false)
-            } else {
-              Image($r('app.media.ic_common_delete'))
-                .height(28)
-                .onClick(() => this.isDel = true)
+            Row() {
+
+              if (this.isDel) {
+                Text('全部删除')
+                  .onClick(() => {
+                    this.list = []
+                    this.historyFile.putSync('list', [])
+                    this.historyFile.flush()
+                  })
+                Text(' | ')
+                Text('取消删除')
+                  .onClick(() => this.isDel = false)
+              } else {
+                Image($r('app.media.ic_common_delete'))
+                  .height(28)
+                  .onClick(() => this.isDel = true)
+              }
+
             }
-
           }
-        }
-        .width('100%')
-        .justifyContent(FlexAlign.SpaceBetween)
+          .width('100%')
+          .justifyContent(FlexAlign.SpaceBetween)
 
-        Flex({ wrap: FlexWrap.Wrap }) {
-          ForEach(this.list, (item: string) => {
-            this.itemBuilder(item)
-          })
+          Flex({ wrap: FlexWrap.Wrap }) {
+            ForEach(this.list, (item: string) => {
+              this.itemBuilder(item)
+            })
+          }
+        } else {
+          Text('搜索结果列表')
         }
+
       }
       .padding(15)
     }

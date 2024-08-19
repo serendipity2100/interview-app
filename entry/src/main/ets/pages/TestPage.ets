@@ -12,7 +12,6 @@ struct PreDemo {
 
   aboutToAppear(): void {
     this.list = this.historyFile.getSync('list', []) as string[]
-
   }
 
   build() {
