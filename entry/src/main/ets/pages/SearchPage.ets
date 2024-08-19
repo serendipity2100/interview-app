@@ -11,10 +11,7 @@ interface iRouterParams {
 struct SearchPage {
   @StorageProp('topHeight')
   topHeight: number = 0
-  // 1. 定义状态变量 isInput  为true显示搜索记录页面, 为false显示搜索结果列表
   @State isInput: boolean = false
-
-  // 3. 点击事件和回车事件中 修改isInput
 
   aboutToAppear(): void {
     let params = router.getParams() as iRouterParams
@@ -54,7 +51,6 @@ struct SearchPage {
           })
           .onClick(() => this.isInput = true)
 
-        // 2. 条件渲染
         if (this.isInput) {
           Row() {
             Text('搜索记录').fontSize(20).fontWeight(800)
