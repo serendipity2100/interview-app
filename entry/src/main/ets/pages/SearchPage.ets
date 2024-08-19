@@ -25,11 +25,7 @@ struct SearchPage {
   historyFile = preferences.getPreferencesSync(getContext(this), { name: 'history' })
 
   build() {
-    // 1. 使用Nav组件包住所有的代码
     Navigation() {
-      // 2. 迁移代码
-      // 3. 修复沉浸模式的bug
-      // 4. 搜索组件改造传参
       Column({ space: 15 }) {
         TextInput({ placeholder: '输入回车保存数据', text: $$this.keyword })
           .onSubmit(() => {
