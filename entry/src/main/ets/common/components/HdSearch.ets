@@ -44,7 +44,7 @@ export struct HdSearch {
       .justifyContent(FlexAlign.Center)
     }.onClick(() => {
       router.pushUrl({
-        url: 'pages/SearchPage', params: { keywordText: 'xxx' }
+        url: 'pages/SearchPage', params: { keywordText: this.ph }
       })
     })
   }
