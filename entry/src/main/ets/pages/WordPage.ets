@@ -15,7 +15,7 @@ export struct WordPage {
   @State
   showCodeSheet: boolean = false // 控制当前单词详细代码弹框
   @State
-  currentType: string = 'HTML5' // 当前阶段名称
+  currentType: string = 'CSS3' // 当前阶段名称
   @State
   loading: boolean = false
   // 单词数据
@@ -34,6 +34,27 @@ export struct WordPage {
         "zh": "字体颜色",
         "code": "color: red;"
       }
+    ],
+    '鸿蒙': [
+      {
+        "en": "color",
+        "zh": "字体颜色",
+        "code": "color: red;"
+      }
+    ],
+    'arkTS': [
+      {
+        "en": "color",
+        "zh": "字体颜色",
+        "code": "color: red;"
+      }
+    ],
+    '安卓': [
+      {
+        "en": "color",
+        "zh": "字体颜色",
+        "code": "color: red;"
+      }
     ]
   }
   currentCode: string = ''
@@ -44,7 +65,7 @@ export struct WordPage {
   typeSheetBuilder() {
     Column() {
       Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
-        ForEach(['HTML5', 'CSS3'], (key: string, index) => {
+        ForEach(Object.keys(this.words), (key: string, index) => {
           Button() {
             Text(key)
               .fontSize(14)
