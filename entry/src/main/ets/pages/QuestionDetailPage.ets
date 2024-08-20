@@ -2,6 +2,7 @@ import { HdTag } from '../common/components/HdTag'
 import { promptAction, router } from '@kit.ArkUI'
 import { request } from '../common/utils/request'
 import { HdLoadingDialog } from '../common/components/HdLoading'
+import { trackService } from '../common/utils/TrackService'
 
 export interface QuestionDetail {
   id: string
@@ -28,24 +29,6 @@ export interface IBodyParms {
 }
 
 
-// 上报访问时长接口的body参数类型
-export interface iTimeBody {
-  timeList: iTimeItem[]
-}
-
-// 访问时长数据埋点接口要求的数据格式
-export interface iTimeItem {
-  /** 结束时间（毫秒） */
-  endTime: number;
-
-  /** 试题id */
-  questionId: string;
-
-  /** 开始时间(毫秒) */
-  startTime: number;
-}
-
-
 @Entry
 @Component
 export struct QuestionDetailPage {
@@ -57,7 +40,6 @@ export struct QuestionDetailPage {
     builder: HdLoadingDialog({ message: '加载中...' }),
     customStyle: true
   })
-  timeItem: iTimeItem = {} as iTimeItem
 
   aboutToAppear(): void {
     const params = router.getParams() as ParamsType
@@ -68,31 +50,17 @@ export struct QuestionDetailPage {
 
     this.dialog.open()
     const res = await request<QuestionDetail>({ url: 'hm/question/' + id })
-
-    this.timeItem.startTime = Date.now()
-    this.timeItem.questionId = id
-
-
     this.questionId = id
     this.question = res.data.data
-
     this.dialog.close()
+
+    //   1. 记录开始时间
+    trackService.start(id)
   }
 
   async aboutToDisappear() {
-
-    this.timeItem.endTime = Date.now()
-
-    await request<null, iTimeBody>({
-      url: 'hm/time/tracking',
-      method: 'post',
-      data: {
-        timeList: [this.timeItem]
-      }
-    })
-
-    promptAction.showToast({ message: '上报成功' })
-
+    // 2. 记录结束时间
+    trackService.end()
   }
 
   // 题目所属标签
