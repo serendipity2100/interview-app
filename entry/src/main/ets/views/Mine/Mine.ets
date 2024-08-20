@@ -20,15 +20,12 @@ interface Tool {
 
 @Component
 export struct Mine {
-  // 1， 定义状态变量, 保存累计时长
-  // totalTime
   @State totalTime: number = 0
   @StorageProp('user')
   currentUser: iLoginUserModel = {} as iLoginUserModel
 
   aboutToAppear(): void {
     WindowManager.setStatusBarLight()
-    // 2. 创建后发请求, 保存数据
     this.getData()
   }
 
@@ -40,18 +37,15 @@ export struct Mine {
     this.totalTime = res.data.data["totalTime"]
   }
 
-  // 3. 转数据为 时 分 秒
   switchTime(second: number) {
-    //    >3600 小时
     if (second >= 3600) {
       return (second / 3600).toFixed(1) + '小时'
     }
 
-    //   >60 <3600 分钟
     if (second >= 60) {
       return (second / 60).toFixed(1) + '分钟'
     }
-    //   <60 秒
+    
     return second + '秒'
 
   }
