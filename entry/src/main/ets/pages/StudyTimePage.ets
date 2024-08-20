@@ -1,4 +1,6 @@
+import { request } from '../common/utils/request'
 import { WindowManager } from '../common/utils/WindowManager'
+import { JSON } from '@kit.ArkTS'
 
 interface ListItemStudy {
   id: string
@@ -38,8 +40,7 @@ struct StudyTimePage {
       undone: 80
     }
   ]
-  @State
-  totalTime: number = 300
+  @State totalTime: number = 300
   @StorageProp('topHeight')
   topHeight: number = 0
 
@@ -57,8 +58,18 @@ struct StudyTimePage {
     return Math.round(value / total * 100) + '%'
   }
 
+  async getData() {
+    const res = await request<object>({ url: 'hm/studyInfo' })
+    // 2. 保存数据
+    this.totalTime = res.data.data['totalTime']
+    this.knowledge = res.data.data['studyData'][0]['list']
+    this.project = res.data.data['studyData'][1]['list']
+  }
+
   aboutToAppear(): void {
     WindowManager.setStatusBarLight()
+    // 1. 请求数据
+    this.getData()
   }
 
   aboutToDisappear(): void {
