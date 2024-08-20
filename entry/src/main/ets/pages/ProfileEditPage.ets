@@ -29,14 +29,12 @@ struct ProfileEditPage {
                 .borderRadius((40))
                 .border({ width: 0.5, color: '#e4e4e4' })
                 .onClick(async () => {
-                  // 1. ✅打开相册  选择图片(url路径)
                   const xxxPicker = new picker.PhotoViewPicker()
                   const res = await xxxPicker.select({
                     MIMEType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
                     maxSelectNumber: 1
                   })
 
-                  // 0. 使用return防止if 嵌套
                   if (res.photoUris.length === 0) {
                     return
                   }
@@ -44,14 +42,12 @@ struct ProfileEditPage {
                   const context = getContext(this)
                   const cacheDir = context.cacheDir
 
-                  // ✅ 2. 拷贝图片到缓存目录
                   const oldPath = res.photoUris[0]
                   const oldFile = fileIo.openSync(oldPath, fileIo.OpenMode.READ_ONLY)
 
                   const fileName = Date.now()
                   fileIo.copyFileSync(oldFile.fd, cacheDir + '/' + `${fileName}.jpg`)
 
-                  // 3. request.uploadFile
                   const task = await request.uploadFile(context, {
                     url: 'https://api-harmony-teach.itheima.net/hm/userInfo/avatar',
                     header: {
@@ -73,17 +69,13 @@ struct ProfileEditPage {
                     AlertDialog.show({ message: JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
                   })
 
-                  // 1. 监听实时显示上传的进度
                   task.on('progress', async (updatedSize, totalSize) => {
 
-                    // 2. 计算上传进度
                     const percent = (updatedSize / totalSize * 100).toFixed(2) + '%'
                     promptAction.showToast({ message: '上传进度为' + percent })
 
-                    // 3. 上传成功后更新头像
                     if (updatedSize === totalSize) {
                       promptAction.showToast({ message: '上传成功' })
-                      // 调用接口查询用户信息, 更新本地的数据
                       const res = await axiosRequest<iLoginUserModel>({ url: 'hm/userInfo' })
                       this.currentUser.avatar = res.data.data.avatar
                     }
