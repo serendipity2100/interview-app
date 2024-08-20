@@ -1,7 +1,10 @@
 import { iLoginUserModel } from '../models/AccountModel'
 import { fileIo, picker } from '@kit.CoreFileKit'
 import { request } from '@kit.BasicServicesKit'
+import { request as axiosRequest } from '../common/utils/request'
+
 import { http } from '@kit.NetworkKit'
+import { promptAction } from '@kit.ArkUI'
 
 
 @Entry
@@ -65,12 +68,26 @@ struct ProfileEditPage {
                     data: []
                   })
 
-                  task.on('complete', () => {
-                    AlertDialog.show({ message: '上传成功', alignment: DialogAlignment.Center })
-                  })
 
                   task.on('fail', (err) => {
                     AlertDialog.show({ message: JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
+                  })
+
+                  // 1. 监听实时显示上传的进度
+                  task.on('progress', async (updatedSize, totalSize) => {
+
+                    // 2. 计算上传进度
+                    const percent = (updatedSize / totalSize * 100).toFixed(2) + '%'
+                    promptAction.showToast({ message: '上传进度为' + percent })
+
+                    // 3. 上传成功后更新头像
+                    if (updatedSize === totalSize) {
+                      promptAction.showToast({ message: '上传成功' })
+                      // 调用接口查询用户信息, 更新本地的数据
+                      const res = await axiosRequest<iLoginUserModel>({ url: 'hm/userInfo' })
+                      this.currentUser.avatar = res.data.data.avatar
+                    }
+
                   })
 
                 })
