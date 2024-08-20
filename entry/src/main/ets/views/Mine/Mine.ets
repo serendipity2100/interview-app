@@ -1,4 +1,5 @@
 import { router } from '@kit.ArkUI'
+import { request } from '../../common/utils/request'
 import { WindowManager } from '../../common/utils/WindowManager'
 import { iLoginUserModel } from '../../models/AccountModel'
 
@@ -16,13 +17,43 @@ interface Tool {
   onClick?: () => void
 }
 
+interface IResData {
+  totalTime: number
+}
+
 @Component
 export struct Mine {
+  // 1， 定义状态变量, 保存累计时长
+  // totalTime
+  @State totalTime: number = 0
   @StorageProp('user')
   currentUser: iLoginUserModel = {} as iLoginUserModel
 
   aboutToAppear(): void {
     WindowManager.setStatusBarLight()
+    // 2. 创建后发请求, 保存数据
+    this.getData()
+  }
+
+  async getData() {
+    const res = await request<IResData>({ url: 'hm/studyInfo' })
+    this.totalTime = res.data.data.totalTime
+  }
+
+  // 3. 转数据为 时 分 秒
+  switchTime(second: number) {
+    //    >3600 小时
+    if (second >= 3600) {
+      return (second / 3600).toFixed(1) + '小时'
+    }
+
+    //   >60 <3600 分钟
+    if (second >= 60) {
+      return (second / 60).toFixed(1) + '分钟'
+    }
+    //   <60 秒
+    return second + '秒'
+
   }
 
   aboutToDisappear(): void {
@@ -74,7 +105,8 @@ export struct Mine {
         this.navBuilder({
           icon: $r('app.media.ic_mine_study'),
           name: '累计学时',
-          other: '4 小时'
+          // 4. 渲染数据
+          other: this.switchTime(this.totalTime)
         ,
           onClick: () => {
             router.pushUrl({ url: '跳转到学习记录页面' })
