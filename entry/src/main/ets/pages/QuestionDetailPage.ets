@@ -27,6 +27,29 @@ export interface IBodyParms {
   optType: number
 }
 
+// 1. cv类型
+
+// 上报访问时长接口的body参数类型
+export interface iTimeBody {
+  timeList: iTimeItem[]
+}
+
+// 访问时长数据埋点接口要求的数据格式
+export interface iTimeItem {
+  /** 结束时间（毫秒） */
+  endTime: number;
+
+  /** 试题id */
+  questionId: string;
+
+  /** 开始时间(毫秒) */
+  startTime: number;
+}
+
+
+// 需求:  实现上报一条数据
+
+
 @Entry
 @Component
 export struct QuestionDetailPage {
@@ -38,9 +61,10 @@ export struct QuestionDetailPage {
     builder: HdLoadingDialog({ message: '加载中...' }),
     customStyle: true
   })
+  // 2. 定义个对象类型, 准备保存三个数据: 开始时间,  结束时间, 问题id
+  timeItem: iTimeItem = {} as iTimeItem
 
   aboutToAppear(): void {
-
     const params = router.getParams() as ParamsType
     this.loadData(params.id.toString())
   }
@@ -49,10 +73,34 @@ export struct QuestionDetailPage {
 
     this.dialog.open()
     const res = await request<QuestionDetail>({ url: 'hm/question/' + id })
+
+    // 3. 数据请求成功后, 立马记录一个开始时间戳和id
+    this.timeItem.startTime = Date.now()
+    this.timeItem.questionId = id
+
+
     this.questionId = id
     this.question = res.data.data
 
     this.dialog.close()
+  }
+
+  async aboutToDisappear() {
+
+    // 4. 离开时, 立马记录一个结束时间戳
+    this.timeItem.endTime = Date.now()
+
+    // 5. 通过接口上报服务器
+    await request<null, iTimeBody>({
+      url: 'hm/time/tracking',
+      method: 'post',
+      data: {
+        timeList: [this.timeItem]
+      }
+    })
+
+    promptAction.showToast({ message: '上报成功' })
+
   }
 
   // 题目所属标签
