@@ -1,3 +1,4 @@
+import { IvSkeleton } from '../common/components/IvSkeleton'
 import { request } from '../common/utils/request'
 import { WindowManager } from '../common/utils/WindowManager'
 
@@ -13,33 +14,10 @@ interface ListItemStudy {
 @Component
 struct StudyTimePage {
   @State
-  knowledge: ListItemStudy[] = [
-    {
-      id: "1",
-      name: "ArkTS",
-      total: 100,
-      done: 20,
-      undone: 80
-    },
-    {
-      id: "1",
-      name: "ArkUI",
-      total: 100,
-      done: 40,
-      undone: 60
-    }
-  ]
+  knowledge: ListItemStudy[] = []
   @State
-  project: ListItemStudy[] = [
-    {
-      id: "1",
-      name: "鸿蒙应用",
-      total: 100,
-      done: 20,
-      undone: 80
-    }
-  ]
-  @State totalTime: number = 300
+  project: ListItemStudy[] = []
+  @State totalTime: number = 0
   @StorageProp('topHeight')
   topHeight: number = 0
 
@@ -83,85 +61,115 @@ struct StudyTimePage {
           }.width('100%').margin({ bottom: (10) })
 
           Row() {
-            Text(this.getTimeText(this.totalTime, false)).fontSize((40)).fontWeight(FontWeight.Bold)
-            Text(this.totalTime < 3600 ? '分钟' : '小时').margin({ bottom: (8), left: (8) })
+            if (this.totalTime === 0) {
+              IvSkeleton({ widthValue: 120, heightValue: 50 })
+            } else {
+              Text(this.getTimeText(this.totalTime, false)).fontSize((40)).fontWeight(FontWeight.Bold)
+              Text(this.totalTime < 3600 ? '分钟' : '小时').margin({ bottom: (8), left: (8) })
+            }
+
           }.width('100%').alignItems(VerticalAlign.Bottom).margin({ bottom: (20) })
 
           Column() {
             Text('知识点学习进度').margin({ bottom: (10) })
-            GridRow({ columns: 2, gutter: 20 }) {
-              ForEach(this.knowledge, (item: ListItemStudy) => {
-                GridCol() {
-                  Column() {
-                    Row() {
-                      Text(item.name).fontColor('#c3c4c5').fontSize((14))
-                      Text(this.getPercentText(item.done, item.total)).fontColor('#c3c4c5').fontSize((14))
-                    }.width('100%').justifyContent(FlexAlign.SpaceBetween)
-                    .margin({ bottom: (5) })
 
-                    Progress({ value: item.done, total: item.total }).color('#87E0CD')
+            if (this.knowledge.length === 0) {
+              Grid() {
+                ForEach(Array.from({ length: 20 }), () => {
+                  GridItem() {
+                    IvSkeleton({ widthValue: 150, heightValue: 20 })
                   }
-                }
-              })
-
-              GridCol({ span: 2 }) {
-                Row() {
-                  Text()
-                    .width((7))
-                    .height((7))
-                    .borderRadius((4))
-                    .backgroundColor('#87E0CD')
-                    .margin({ right: (4) })
-                  Text('已学占比').fontSize((12)).margin({ right: (20) })
-                  Text()
-                    .width((7))
-                    .height((7))
-                    .borderRadius((4))
-                    .backgroundColor('#c3c4c5')
-                    .margin({ right: (4) })
-                  Text('未学占比').fontSize((12))
-                }.justifyContent(FlexAlign.Center)
+                  .margin({ bottom: 15 })
+                })
               }
-            }.backgroundColor('#fff').borderRadius((4)).padding((15))
+              .columnsTemplate('1fr 1fr')
+              .columnsGap(15)
+            } else {
+              GridRow({ columns: 2, gutter: 20 }) {
+                ForEach(this.knowledge, (item: ListItemStudy) => {
+                  GridCol() {
+                    Column() {
+                      Row() {
+                        Text(item.name).fontColor('#c3c4c5').fontSize((14))
+                        Text(this.getPercentText(item.done, item.total)).fontColor('#c3c4c5').fontSize((14))
+                      }.width('100%').justifyContent(FlexAlign.SpaceBetween)
+                      .margin({ bottom: (5) })
+
+                      Progress({ value: item.done, total: item.total }).color('#87E0CD')
+                    }
+                  }
+                })
+
+                GridCol({ span: 2 }) {
+                  Row() {
+                    Text()
+                      .width((7))
+                      .height((7))
+                      .borderRadius((4))
+                      .backgroundColor('#87E0CD')
+                      .margin({ right: (4) })
+                    Text('已学占比').fontSize((12)).margin({ right: (20) })
+                    Text()
+                      .width((7))
+                      .height((7))
+                      .borderRadius((4))
+                      .backgroundColor('#c3c4c5')
+                      .margin({ right: (4) })
+                    Text('未学占比').fontSize((12))
+                  }.justifyContent(FlexAlign.Center)
+                }
+              }.backgroundColor('#fff').borderRadius((4)).padding((15))
+            }
+
 
           }.width('100%').alignItems(HorizontalAlign.Start).margin({ bottom: (25) })
 
           Column() {
             Text('项目常问学习进度').margin({ bottom: (10) })
-            GridRow({ columns: 1 }) {
-              ForEach(this.project, (item: ListItemStudy) => {
-                GridCol() {
-                  Column() {
-                    Row() {
-                      Text(item.name).fontColor('#c3c4c5').fontSize((14))
-                      Text(this.getPercentText(item.done, item.total)).fontColor('#c3c4c5').fontSize((14))
-                    }.width('100%').justifyContent(FlexAlign.SpaceBetween)
-                    .margin({ bottom: (5) })
-
-                    Progress({ value: item.done, total: item.total }).color('#c7b5ed').width('100%')
-                  }.margin({ bottom: (25) })
-                }
-              })
-
-              GridCol({ span: 2 }) {
-                Row() {
-                  Text()
-                    .width((7))
-                    .height((7))
-                    .borderRadius((4))
-                    .backgroundColor('#c7b5ed')
-                    .margin({ right: (4) })
-                  Text('已学占比').fontSize((12)).margin({ right: (20) })
-                  Text()
-                    .width((7))
-                    .height((7))
-                    .borderRadius((4))
-                    .backgroundColor('#c3c4c5')
-                    .margin({ right: (4) })
-                  Text('未学占比').fontSize((12))
-                }.justifyContent(FlexAlign.Center)
+            if (this.project.length === 0) {
+              Column() {
+                ForEach(Array.from({ length: 4 }), () => {
+                  IvSkeleton({ widthValue: 340, heightValue: 20 })
+                    .margin({ bottom: 10 })
+                })
               }
-            }.backgroundColor('#fff').borderRadius((4)).padding((15))
+            } else {
+              GridRow({ columns: 1 }) {
+                ForEach(this.project, (item: ListItemStudy) => {
+                  GridCol() {
+                    Column() {
+                      Row() {
+                        Text(item.name).fontColor('#c3c4c5').fontSize((14))
+                        Text(this.getPercentText(item.done, item.total)).fontColor('#c3c4c5').fontSize((14))
+                      }.width('100%').justifyContent(FlexAlign.SpaceBetween)
+                      .margin({ bottom: (5) })
+
+                      Progress({ value: item.done, total: item.total }).color('#c7b5ed').width('100%')
+                    }.margin({ bottom: (25) })
+                  }
+                })
+
+                GridCol({ span: 2 }) {
+                  Row() {
+                    Text()
+                      .width((7))
+                      .height((7))
+                      .borderRadius((4))
+                      .backgroundColor('#c7b5ed')
+                      .margin({ right: (4) })
+                    Text('已学占比').fontSize((12)).margin({ right: (20) })
+                    Text()
+                      .width((7))
+                      .height((7))
+                      .borderRadius((4))
+                      .backgroundColor('#c3c4c5')
+                      .margin({ right: (4) })
+                    Text('未学占比').fontSize((12))
+                  }.justifyContent(FlexAlign.Center)
+                }
+              }.backgroundColor('#fff').borderRadius((4)).padding((15))
+
+            }
           }.width('100%').alignItems(HorizontalAlign.Start)
 
         }.padding((15))
