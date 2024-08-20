@@ -11,20 +11,100 @@ import { HdLoadingDialog } from '../common/components/HdLoading'
 @Entry
 @Component
 struct ProfileEditPage {
-  // 获取登录用户数据
-  // 5. 把@StorageProp改为 @StorageLink
-  @StorageLink('user') currentUser: iLoginUserModel = {} as iLoginUserModel
-  // 获取安全区域高度数据
-  @StorageProp("topHeight") topHeight: number = 0
-  // 需求: 使用自定义弹窗组件提示上传进度
+  /** -----------------------------  状态变量 ---------------------- */
 
-  // 1. 定义一个状态变量, 做双向绑定
+  // 全局的用户信息 包含了用户的头像和昵称
+  @StorageLink('user') currentUser: iLoginUserModel = {} as iLoginUserModel
+  // 修复状态栏高度
+  @StorageProp("topHeight") topHeight: number = 0
+  // 双向绑定使用的昵称
   @State nickName: string = this.currentUser.nickName
-  @State percent: string = '0%'
+  /** -----------------------------  普通变量 ---------------------- */
+
+  // 显示加载进度的自定义弹窗组件
   dialog = new CustomDialogController({
-    builder: HdLoadingDialog({ message: '上传进度为' + this.percent }),
+    builder: HdLoadingDialog({ message: '上传进度为' }),
     customStyle: true
   })
+
+  /** -----------------------------  实例方法 ---------------------- */
+  async updateAvatar() {
+    const xxxPicker = new picker.PhotoViewPicker()
+    const res = await xxxPicker.select({
+      MIMEType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
+      maxSelectNumber: 1
+    })
+
+    if (res.photoUris.length === 0) {
+      return
+    }
+
+    const context = getContext(this)
+    const cacheDir = context.cacheDir
+
+    const oldPath = res.photoUris[0]
+    const oldFile = fileIo.openSync(oldPath, fileIo.OpenMode.READ_ONLY)
+
+    const fileName = Date.now()
+    fileIo.copyFileSync(oldFile.fd, cacheDir + '/' + `${fileName}.jpg`)
+
+
+    this.dialog.open()
+    const task = await request.uploadFile(context, {
+      url: 'https://api-harmony-teach.itheima.net/hm/userInfo/avatar',
+      header: {
+        'content-type': 'multipart/form-data',
+        Authorization: `Bearer ${this.currentUser.token}`
+      },
+      method: http.RequestMethod.POST,
+      files: [{
+        filename: `${fileName}.jpg`,
+        uri: `internal://cache/${fileName}.jpg`,
+        name: 'file',
+        type: 'jpg'
+      }],
+      data: []
+    })
+
+
+    task.on('fail', (err) => {
+      AlertDialog.show({ message: JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
+    })
+
+    task.on('progress', async (updatedSize, totalSize) => {
+
+      const percent = (updatedSize / totalSize * 100).toFixed(2) + '%'
+
+
+      emitter.emit('updateMsg', {
+        data: {
+          xxx: `上传进度为${percent}`
+        }
+      })
+
+
+      if (updatedSize === totalSize) {
+        this.dialog.close()
+        const res = await axiosRequest<iLoginUserModel>({ url: 'hm/userInfo' })
+        this.currentUser.avatar = res.data.data.avatar
+      }
+
+    })
+  }
+
+  async updateNickname() {
+    await axiosRequest<null, object>({
+      url: 'hm/userInfo/profile', method: 'post',
+      data: {
+        nickName: this.nickName
+      }
+    })
+
+
+    this.currentUser.nickName = this.nickName
+
+    promptAction.showToast({ message: '更新成功' })
+  }
 
   build() {
     Navigation() {
@@ -40,67 +120,7 @@ struct ProfileEditPage {
                 .borderRadius((40))
                 .border({ width: 0.5, color: '#e4e4e4' })
                 .onClick(async () => {
-                  const xxxPicker = new picker.PhotoViewPicker()
-                  const res = await xxxPicker.select({
-                    MIMEType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
-                    maxSelectNumber: 1
-                  })
-
-                  if (res.photoUris.length === 0) {
-                    return
-                  }
-
-                  const context = getContext(this)
-                  const cacheDir = context.cacheDir
-
-                  const oldPath = res.photoUris[0]
-                  const oldFile = fileIo.openSync(oldPath, fileIo.OpenMode.READ_ONLY)
-
-                  const fileName = Date.now()
-                  fileIo.copyFileSync(oldFile.fd, cacheDir + '/' + `${fileName}.jpg`)
-
-
-                  this.dialog.open()
-                  const task = await request.uploadFile(context, {
-                    url: 'https://api-harmony-teach.itheima.net/hm/userInfo/avatar',
-                    header: {
-                      'content-type': 'multipart/form-data',
-                      Authorization: `Bearer ${this.currentUser.token}`
-                    },
-                    method: http.RequestMethod.POST,
-                    files: [{
-                      filename: `${fileName}.jpg`,
-                      uri: `internal://cache/${fileName}.jpg`,
-                      name: 'file',
-                      type: 'jpg'
-                    }],
-                    data: []
-                  })
-
-
-                  task.on('fail', (err) => {
-                    AlertDialog.show({ message: JSON.stringify(err, null, 2), alignment: DialogAlignment.Center })
-                  })
-
-                  task.on('progress', async (updatedSize, totalSize) => {
-
-                    const percent = (updatedSize / totalSize * 100).toFixed(2) + '%'
-
-
-                    emitter.emit('updateMsg', {
-                      data: {
-                        xxx: `上传进度为${percent}`
-                      }
-                    })
-
-
-                    if (updatedSize === totalSize) {
-                      this.dialog.close()
-                      const res = await axiosRequest<iLoginUserModel>({ url: 'hm/userInfo' })
-                      this.currentUser.avatar = res.data.data.avatar
-                    }
-
-                  })
+                  this.updateAvatar()
 
                 })
             }.width('100%').height((60)).justifyContent(FlexAlign.SpaceBetween)
@@ -110,7 +130,6 @@ struct ProfileEditPage {
             Row() {
               Text('昵称')
               // 回显用户昵称
-              // 2. 使用状态变量做双向绑定, 并且删除逻辑或
               TextInput({ text: $$this.nickName })
                 .textAlign(TextAlign.End)
                 .layoutWeight(1)
@@ -119,23 +138,7 @@ struct ProfileEditPage {
                 .backgroundColor(Color.Transparent)
                 .borderRadius(0)
                 .onSubmit(async () => {
-                  // 修改昵称 this.updateNickName()
-                  //  3. 调用更新的接口
-                  // 4. 使用object代替请求体类型, 稍微偷个懒
-                  await axiosRequest<null, object>({
-                    url: 'hm/userInfo/profile', method: 'post',
-                    data: {
-                      nickName: this.nickName
-                    }
-                  })
-
-
-                  // 6. 修改currentUser 全局的用户名统一更新
-                  this.currentUser.nickName = this.nickName
-
-
-                  promptAction.showToast({ message: '更新成功' })
-
+                  await this.updateNickname()
                 })
             }.width('100%').height(60).justifyContent(FlexAlign.SpaceBetween)
           }
