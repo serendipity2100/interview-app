@@ -1,8 +1,4 @@
-
-
-/**
- * 返回数据
- */
+/** 返回数据 */
 export interface iLoginUserModel {
   /** 用户头像地址 */
   avatar?: string;
@@ -33,13 +29,9 @@ export interface iLoginUserModel {
 }
 
 export interface ILoginBody {
-  /**
-   * 密码
-   */
+  /** 密码 */
   password: string;
 
-  /**
-   * 用户名
-   */
+  /** 用户名 */
   username: string;
 }

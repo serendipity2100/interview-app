@@ -17,11 +17,8 @@ struct ProfileEditPage {
   @StorageProp("topHeight") topHeight: number = 0
   // 需求: 使用自定义弹窗组件提示上传进度
 
-  // 4. 定义一个percent状态变量
   @State percent: string = '0%'
-  // 1. 创建一个自定义弹窗组件控制器
   dialog = new CustomDialogController({
-    // 5. 使用状态变量, 传给自定义弹窗组件.   ❌❌❌❌ @State这些装饰器, 只能更新build函数中摆出来的组件, 无法更新CustomDialog中的组件内容
     builder: HdLoadingDialog({ message: '上传进度为' + this.percent }),
     customStyle: true
   })
@@ -60,7 +57,6 @@ struct ProfileEditPage {
                   fileIo.copyFileSync(oldFile.fd, cacheDir + '/' + `${fileName}.jpg`)
 
 
-                  // 2.上传前打开自定义弹窗
                   this.dialog.open()
                   const task = await request.uploadFile(context, {
                     url: 'https://api-harmony-teach.itheima.net/hm/userInfo/avatar',
@@ -87,8 +83,7 @@ struct ProfileEditPage {
 
                     const percent = (updatedSize / totalSize * 100).toFixed(2) + '%'
 
-                    // 💥自定义弹窗组件无法通过父传子更新数据
-                    // 1. 使用emitter.emit('事件名',  {data: {键: 值}})
+
                     emitter.emit('updateMsg', {
                       data: {
                         xxx: `上传进度为${percent}`
@@ -97,7 +92,6 @@ struct ProfileEditPage {
 
 
                     if (updatedSize === totalSize) {
-                      // 3. 上传成功后关闭
                       this.dialog.close()
                       const res = await axiosRequest<iLoginUserModel>({ url: 'hm/userInfo' })
                       this.currentUser.avatar = res.data.data.avatar
