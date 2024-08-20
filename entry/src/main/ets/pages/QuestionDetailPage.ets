@@ -27,7 +27,6 @@ export interface IBodyParms {
   optType: number
 }
 
-// 1. cv类型
 
 // 上报访问时长接口的body参数类型
 export interface iTimeBody {
@@ -47,9 +46,6 @@ export interface iTimeItem {
 }
 
 
-// 需求:  实现上报一条数据
-
-
 @Entry
 @Component
 export struct QuestionDetailPage {
@@ -61,7 +57,6 @@ export struct QuestionDetailPage {
     builder: HdLoadingDialog({ message: '加载中...' }),
     customStyle: true
   })
-  // 2. 定义个对象类型, 准备保存三个数据: 开始时间,  结束时间, 问题id
   timeItem: iTimeItem = {} as iTimeItem
 
   aboutToAppear(): void {
@@ -74,7 +69,6 @@ export struct QuestionDetailPage {
     this.dialog.open()
     const res = await request<QuestionDetail>({ url: 'hm/question/' + id })
 
-    // 3. 数据请求成功后, 立马记录一个开始时间戳和id
     this.timeItem.startTime = Date.now()
     this.timeItem.questionId = id
 
@@ -87,10 +81,8 @@ export struct QuestionDetailPage {
 
   async aboutToDisappear() {
 
-    // 4. 离开时, 立马记录一个结束时间戳
     this.timeItem.endTime = Date.now()
 
-    // 5. 通过接口上报服务器
     await request<null, iTimeBody>({
       url: 'hm/time/tracking',
       method: 'post',
@@ -121,7 +113,6 @@ export struct QuestionDetailPage {
       return item === this.questionId.toString()
     })
 
-    // 1. 先处理所有的异常
     if (xxx === 'pre' && selfIndex === 0) {
       promptAction.showToast({ message: '没有上一题了' })
       return
@@ -132,7 +123,6 @@ export struct QuestionDetailPage {
       return
     }
 
-    // 2. 再处理正常的业务逻辑
     let id = xxx === 'pre' ? idList[selfIndex - 1] : idList[selfIndex + 1]
     this.loadData(id)
 
