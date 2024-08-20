@@ -1,6 +1,6 @@
 import { iLoginUserModel } from '../models/AccountModel'
 import { fileIo, picker } from '@kit.CoreFileKit'
-import { request } from '@kit.BasicServicesKit'
+import { emitter, request } from '@kit.BasicServicesKit'
 import { request as axiosRequest } from '../common/utils/request'
 
 import { http } from '@kit.NetworkKit'
@@ -87,9 +87,14 @@ struct ProfileEditPage {
 
                     const percent = (updatedSize / totalSize * 100).toFixed(2) + '%'
 
-                    // 6. 更新上传进度 😒😒 观察不会更新弹出层组件
-                    this.percent = percent
-                    promptAction.showToast({ message: '上传进度为' + percent })
+                    // 💥自定义弹窗组件无法通过父传子更新数据
+                    // 1. 使用emitter.emit('事件名',  {data: {键: 值}})
+                    emitter.emit('updateMsg', {
+                      data: {
+                        xxx: `上传进度为${percent}`
+                      }
+                    })
+
 
                     if (updatedSize === totalSize) {
                       // 3. 上传成功后关闭

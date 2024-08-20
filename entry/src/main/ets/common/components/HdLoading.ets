@@ -1,7 +1,18 @@
+import emitter from '@ohos.events.emitter'
+
 @CustomDialog
 export struct HdLoadingDialog {
+  // 2. 加一个装饰
+  @State
   message: string = ''
   controller: CustomDialogController
+
+  // 3. 创建后使用emitter.on监听,  收消息
+  aboutToAppear(): void {
+    emitter.on('updateMsg', (res) => {
+      this.message = res.data!.xxx
+    })
+  }
 
   build() {
     Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Center }) {
