@@ -1,6 +1,5 @@
 import { request } from '../common/utils/request'
 import { WindowManager } from '../common/utils/WindowManager'
-import { JSON } from '@kit.ArkTS'
 
 interface ListItemStudy {
   id: string
@@ -60,7 +59,6 @@ struct StudyTimePage {
 
   async getData() {
     const res = await request<object>({ url: 'hm/studyInfo' })
-    // 2. 保存数据
     this.totalTime = res.data.data['totalTime']
     this.knowledge = res.data.data['studyData'][0]['list']
     this.project = res.data.data['studyData'][1]['list']
@@ -68,7 +66,6 @@ struct StudyTimePage {
 
   aboutToAppear(): void {
     WindowManager.setStatusBarLight()
-    // 1. 请求数据
     this.getData()
   }
 
