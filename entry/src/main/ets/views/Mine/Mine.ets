@@ -17,9 +17,6 @@ interface Tool {
   onClick?: () => void
 }
 
-interface IResData {
-  totalTime: number
-}
 
 @Component
 export struct Mine {
@@ -36,8 +33,11 @@ export struct Mine {
   }
 
   async getData() {
-    const res = await request<IResData>({ url: 'hm/studyInfo' })
-    this.totalTime = res.data.data.totalTime
+    const res = await request<object>({ url: 'hm/studyInfo' })
+
+    // this.totalTime = res.data.data.totalTime
+    // 💥💥 上下两种写法一样, 但是可以绕过data的类型检查
+    this.totalTime = res.data.data["totalTime"]
   }
 
   // 3. 转数据为 时 分 秒
