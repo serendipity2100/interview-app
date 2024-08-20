@@ -45,7 +45,7 @@ export struct Mine {
     if (second >= 60) {
       return (second / 60).toFixed(1) + '分钟'
     }
-    
+
     return second + '秒'
 
   }
@@ -100,10 +100,9 @@ export struct Mine {
           icon: $r('app.media.ic_mine_study'),
           name: '累计学时',
           // 4. 渲染数据
-          other: this.switchTime(this.totalTime)
-        ,
+          other: this.switchTime(this.totalTime),
           onClick: () => {
-            router.pushUrl({ url: '跳转到学习记录页面' })
+            router.pushUrl({ url: '/pages/StudyTimePage'.slice(1) })
           }
         })
       }
