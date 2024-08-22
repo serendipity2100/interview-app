@@ -8,22 +8,27 @@ export struct WordSoundDialog {
   @State isGreen: boolean = false // 用来控制颜色切换的
   timer: number = -1
   streamId: number = -1
+  // 1. 定义player变量名
+  player: media.AVPlayer = {} as media.AVPlayer
 
   async aboutToAppear() {
 
-    const player = await media.createAVPlayer()
+    // 2. 创建后给this.player
+    this.player = await media.createAVPlayer()
 
-    player.url = `http://dict.youdao.com/dictvoice?audio=${this.wordEn}&type=1`
+    console.log('this.player -----> ', this.player)
 
-    player.on('stateChange', (state) => {
+    this.player.url = `http://dict.youdao.com/dictvoice?audio=${this.wordEn}&type=1`
+
+    this.player.on('stateChange', (state) => {
 
       if (state === 'initialized') {
-        player.prepare()
+        this.player.prepare()
       }
 
       if (state === 'prepared') {
-        player.loop = true
-        player.play()
+        this.player.loop = true
+        this.player.play()
       }
 
     })
@@ -31,7 +36,8 @@ export struct WordSoundDialog {
   }
 
   aboutToDisappear(): void {
-    console.log('销毁了 -----> ', this.wordZh)
+    // 3. 通过this找到播放器, 关闭播放
+    this.player.stop()
   }
 
   build() {
