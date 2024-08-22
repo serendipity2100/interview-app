@@ -119,6 +119,13 @@ export struct WordPage {
         src: $rawfile('word.html'),
         controller: this.controller
       })
+        .onPageEnd(() => {
+          //   1. 监听网页加载完成
+          promptAction.showToast({ message: '网页加载完成' })
+
+          //   2. 执行JS
+          this.controller.runJavaScript('writeCode("@Entry")')
+        })
 
     }
     .padding({
