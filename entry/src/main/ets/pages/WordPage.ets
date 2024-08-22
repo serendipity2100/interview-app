@@ -120,11 +120,10 @@ export struct WordPage {
         controller: this.controller
       })
         .onPageEnd(() => {
-          //   1. 监听网页加载完成
-          promptAction.showToast({ message: '网页加载完成' })
 
-          //   2. 执行JS
-          this.controller.runJavaScript('writeCode("@Entry")')
+
+          //   2. 模版字符串拼接传入currentCode
+          this.controller.runJavaScript(`writeCode("${this.currentCode}")`)
         })
 
     }
@@ -209,6 +208,8 @@ export struct WordPage {
                   .onClick(() => {
                     // 点击打开详细代码半模态框
                     this.showCodeSheet = true
+                    // 1. 保存code到currentCode
+                    this.currentCode = wordItem.code
                   })
                 }
               }
