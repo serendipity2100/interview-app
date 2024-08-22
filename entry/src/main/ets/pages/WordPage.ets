@@ -75,13 +75,9 @@ export struct WordPage {
 
   }
 
-  // 需求: 准备播放声音的自定义弹出层
-  // 1. 定义两个变量
   wordEn = ''
   wordZh = ''
-  // 2. 创建一个控制器
   soundDialog = new CustomDialogController({
-    // 3. 传参变量给Dialog组件
     builder: WordSoundDialog({ wordEn: this.wordEn, wordZh: this.wordZh }),
     customStyle: true
   })
@@ -132,16 +128,6 @@ export struct WordPage {
         controller: this.controller
       })
         .onPageEnd(() => {
-
-
-          //   2. 模版字符串拼接传入currentCode
-          // 2.1 先在arkTS中字符串拼接
-
-          // 2.2 runJavaScript 把writeCode.....传给网页
-          // writeCode(\`<img src="favicon144.png">\`)
-
-          // 2.3 网页执行writeCode函数中接收到的参数
-          // 最终网页接收到的是: writeCode(`<img src="favicon144.png">`)
           this.controller.runJavaScript(`writeCode(\`${this.currentCode}\`)`)
         })
 
@@ -201,12 +187,8 @@ export struct WordPage {
                   .alignSelf(ItemAlign.Start)
                   .fillColor($r('app.color.common_gray_03'))
                   .onClick(() => {
-                    // 开启弹框读单词
-
-                    // 4. 先赋值点的单词给两个状态变量
                     this.wordEn = wordItem.en
                     this.wordZh = wordItem.zh
-                    // 5. open打开
                     this.soundDialog.open()
                   })
                 Column({ space: 10 }) {
