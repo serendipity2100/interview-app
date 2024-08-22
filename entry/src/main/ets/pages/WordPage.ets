@@ -64,13 +64,10 @@ export struct WordPage {
 
   async aboutToAppear() {
 
-    // 2. Stage通过上下文获取资源读取模块
     const context = getContext(this)
     const res = await context.resourceManager.getRawFileContent('word.json')
 
-    // 3. 创建文字解码器
     const decoder = new util.TextDecoder()
-    // 4 .调用解码方法, 解码二进制数据为字符串
     const xxx = decoder.decodeWithStream(res)
     this.words = JSON.parse(xxx)
 
