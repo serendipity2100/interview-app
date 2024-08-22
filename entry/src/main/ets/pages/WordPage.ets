@@ -1,5 +1,6 @@
 import { promptAction } from '@kit.ArkUI'
 import { util } from '@kit.ArkTS'
+import { webview } from '@kit.ArkWeb'
 
 
 export interface WordItem {
@@ -59,7 +60,7 @@ export struct WordPage {
       }
     ]
   }
-  currentCode: string = ''
+  currentCode = ''
   scroller = new Scroller()
 
   async aboutToAppear() {
@@ -108,11 +109,17 @@ export struct WordPage {
     })
   }
 
+  controller = new webview.WebviewController();
+
   // 弹出单词用法弹窗
   @Builder
   codeSheetBuilder() {
     Stack() {
-      Text("使用WebView动态高亮显示单词用法")
+      Web({
+        src: $rawfile('word.html'),
+        controller: this.controller
+      })
+
     }
     .padding({
       left: 16,
@@ -220,3 +227,4 @@ export struct WordPage {
     .padding({ top: this.topHeight })
   }
 }
+
