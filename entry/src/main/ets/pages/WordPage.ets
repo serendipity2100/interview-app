@@ -123,7 +123,15 @@ export struct WordPage {
 
 
           //   2. 模版字符串拼接传入currentCode
-          this.controller.runJavaScript(`writeCode("${this.currentCode}")`)
+          // 2.1 先在arkTS中字符串拼接
+          `writeCode(\`<img src="favicon144.png">\`)`
+
+          // 2.2 runJavaScript 把writeCode.....传给网页
+          // writeCode(\`<img src="favicon144.png">\`)
+
+          // 2.3 网页执行writeCode函数中接收到的参数
+          // 最终网页接收到的是: writeCode(`<img src="favicon144.png">`)
+          this.controller.runJavaScript(`writeCode(\`${this.currentCode}\`)`)
         })
 
     }
@@ -235,4 +243,5 @@ export struct WordPage {
     .padding({ top: this.topHeight })
   }
 }
+
 
