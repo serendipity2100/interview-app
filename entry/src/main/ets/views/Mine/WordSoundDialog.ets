@@ -1,3 +1,5 @@
+import { media } from '@kit.MediaKit';
+
 @CustomDialog
 export struct WordSoundDialog {
   controller: CustomDialogController // 必须要有的
@@ -7,8 +9,30 @@ export struct WordSoundDialog {
   timer: number = -1
   streamId: number = -1
 
-  aboutToAppear() {
-    console.log('创建了 -----> ', this.wordZh)
+  async aboutToAppear() {
+    //   1. 创建一个播放器
+    const player = await media.createAVPlayer() // 创建成功后默认是闲置状态
+
+    //   2. 给播放器设置MP3的资源路径 url地址
+    player.url = `http://dict.youdao.com/dictvoice?audio=${this.wordEn}&type=1` // mp3下载成功后, 会变成初始状态
+
+    //   3. 💥💥监听状态的变化,
+    player.on('stateChange', (state) => {
+
+
+      // 4. 进入初始状态后, 才可以调用准备函数
+      if (state === 'initialized') {
+        player.prepare() //  prepare()会让播放器进入 准备状态prepared
+      }
+
+      // 5. 进入准备状态后, 才可以调用播放函数play()
+      if (state === 'prepared') {
+        player.loop = true
+        player.play()
+      }
+
+    })
+
   }
 
   aboutToDisappear(): void {
